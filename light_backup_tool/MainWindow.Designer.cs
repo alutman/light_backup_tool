@@ -31,17 +31,11 @@
             this.components = new System.ComponentModel.Container();
             this.configTreeView = new System.Windows.Forms.TreeView();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
-            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportCurrentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.configToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.backupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.backupCurrentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.backupAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.setDefaultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportCurrentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nameInput = new System.Windows.Forms.TextBox();
             this.descInput = new System.Windows.Forms.TextBox();
             this.nameLabel = new System.Windows.Forms.Label();
@@ -53,14 +47,20 @@
             this.modifyConfigButton = new System.Windows.Forms.Button();
             this.tagInput = new System.Windows.Forms.TextBox();
             this.performBackupButton = new System.Windows.Forms.Button();
-            this.useDefaultCheckBox = new System.Windows.Forms.CheckBox();
             this.sourceOpenButton = new System.Windows.Forms.Button();
             this.destOpenButton = new System.Windows.Forms.Button();
             this.appendTagLabel = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.discardButton = new System.Windows.Forms.Button();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.namedFolderCheckBox = new System.Windows.Forms.CheckBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
-            this.discardButton = new System.Windows.Forms.Button();
+            this.numBackupsLablel = new System.Windows.Forms.Label();
+            this.lastBackupLabel = new System.Windows.Forms.Label();
+            this.numBackupsText = new System.Windows.Forms.Label();
+            this.lastBackupText = new System.Windows.Forms.Label();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
@@ -76,32 +76,30 @@
             // menuStrip
             // 
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.configToolStripMenuItem,
-            this.backupToolStripMenuItem,
-            this.settingsToolStripMenuItem});
+            this.configToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(775, 24);
             this.menuStrip.TabIndex = 4;
             this.menuStrip.Text = "menuStrip1";
             // 
-            // fileToolStripMenuItem
+            // configToolStripMenuItem
             // 
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.exportCurrentToolStripMenuItem,
+            this.configToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.newConfigToolStripMenuItem,
             this.importToolStripMenuItem,
-            this.editToolStripMenuItem});
-            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.fileToolStripMenuItem.Text = "File";
+            this.exportCurrentToolStripMenuItem,
+            this.deleteConfigToolStripMenuItem});
+            this.configToolStripMenuItem.Name = "configToolStripMenuItem";
+            this.configToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
+            this.configToolStripMenuItem.Text = "Config";
             // 
-            // exportCurrentToolStripMenuItem
+            // newConfigToolStripMenuItem
             // 
-            this.exportCurrentToolStripMenuItem.Name = "exportCurrentToolStripMenuItem";
-            this.exportCurrentToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.exportCurrentToolStripMenuItem.Text = "Export Config";
-            this.exportCurrentToolStripMenuItem.Click += new System.EventHandler(this.exportCurrentToolStripMenuItem_Click);
+            this.newConfigToolStripMenuItem.Name = "newConfigToolStripMenuItem";
+            this.newConfigToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newConfigToolStripMenuItem.Text = "New Config";
+            this.newConfigToolStripMenuItem.Click += new System.EventHandler(this.addNewConfigToolStripMenuItem_Click);
             // 
             // importToolStripMenuItem
             // 
@@ -110,62 +108,19 @@
             this.importToolStripMenuItem.Text = "Import Config";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
             // 
-            // editToolStripMenuItem
+            // exportCurrentToolStripMenuItem
             // 
-            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.editToolStripMenuItem.Text = "Exit";
-            this.editToolStripMenuItem.Click += new System.EventHandler(this.editToolStripMenuItem_Click);
+            this.exportCurrentToolStripMenuItem.Name = "exportCurrentToolStripMenuItem";
+            this.exportCurrentToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exportCurrentToolStripMenuItem.Text = "Export Config";
+            this.exportCurrentToolStripMenuItem.Click += new System.EventHandler(this.exportCurrentToolStripMenuItem_Click);
             // 
-            // configToolStripMenuItem
+            // deleteConfigToolStripMenuItem
             // 
-            this.configToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newConfigToolStripMenuItem});
-            this.configToolStripMenuItem.Name = "configToolStripMenuItem";
-            this.configToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
-            this.configToolStripMenuItem.Text = "Config";
-            // 
-            // newConfigToolStripMenuItem
-            // 
-            this.newConfigToolStripMenuItem.Name = "newConfigToolStripMenuItem";
-            this.newConfigToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
-            this.newConfigToolStripMenuItem.Text = "New Config";
-            this.newConfigToolStripMenuItem.Click += new System.EventHandler(this.addNewConfigToolStripMenuItem_Click);
-            // 
-            // backupToolStripMenuItem
-            // 
-            this.backupToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.backupCurrentToolStripMenuItem,
-            this.backupAllToolStripMenuItem});
-            this.backupToolStripMenuItem.Name = "backupToolStripMenuItem";
-            this.backupToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
-            this.backupToolStripMenuItem.Text = "Backup";
-            // 
-            // backupCurrentToolStripMenuItem
-            // 
-            this.backupCurrentToolStripMenuItem.Name = "backupCurrentToolStripMenuItem";
-            this.backupCurrentToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.backupCurrentToolStripMenuItem.Text = "Backup Current";
-            // 
-            // backupAllToolStripMenuItem
-            // 
-            this.backupAllToolStripMenuItem.Name = "backupAllToolStripMenuItem";
-            this.backupAllToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.backupAllToolStripMenuItem.Text = "Backup All";
-            // 
-            // settingsToolStripMenuItem
-            // 
-            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.setDefaultsToolStripMenuItem});
-            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.settingsToolStripMenuItem.Text = "Settings";
-            // 
-            // setDefaultsToolStripMenuItem
-            // 
-            this.setDefaultsToolStripMenuItem.Name = "setDefaultsToolStripMenuItem";
-            this.setDefaultsToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
-            this.setDefaultsToolStripMenuItem.Text = "Set Defaults";
+            this.deleteConfigToolStripMenuItem.Name = "deleteConfigToolStripMenuItem";
+            this.deleteConfigToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.deleteConfigToolStripMenuItem.Text = "Delete Config";
+            this.deleteConfigToolStripMenuItem.Click += new System.EventHandler(this.deleteConfigToolStripMenuItem_Click);
             // 
             // nameInput
             // 
@@ -209,6 +164,7 @@
             this.sourceLabel.Size = new System.Drawing.Size(41, 13);
             this.sourceLabel.TabIndex = 9;
             this.sourceLabel.Text = "Source";
+            this.sourceLabel.Click += new System.EventHandler(this.sourceLabel_Click);
             // 
             // destLabel
             // 
@@ -218,6 +174,7 @@
             this.destLabel.Size = new System.Drawing.Size(60, 13);
             this.destLabel.TabIndex = 10;
             this.destLabel.Text = "Destination";
+            this.destLabel.Click += new System.EventHandler(this.destLabel_Click);
             // 
             // sourceInput
             // 
@@ -245,7 +202,7 @@
             // 
             // tagInput
             // 
-            this.tagInput.Location = new System.Drawing.Point(566, 391);
+            this.tagInput.Location = new System.Drawing.Point(554, 391);
             this.tagInput.Name = "tagInput";
             this.tagInput.Size = new System.Drawing.Size(109, 20);
             this.tagInput.TabIndex = 15;
@@ -260,19 +217,9 @@
             this.performBackupButton.UseVisualStyleBackColor = true;
             this.performBackupButton.Click += new System.EventHandler(this.performBackupButton_Click);
             // 
-            // useDefaultCheckBox
-            // 
-            this.useDefaultCheckBox.AutoSize = true;
-            this.useDefaultCheckBox.Location = new System.Drawing.Point(681, 320);
-            this.useDefaultCheckBox.Name = "useDefaultCheckBox";
-            this.useDefaultCheckBox.Size = new System.Drawing.Size(82, 17);
-            this.useDefaultCheckBox.TabIndex = 17;
-            this.useDefaultCheckBox.Text = "Use Default";
-            this.useDefaultCheckBox.UseVisualStyleBackColor = true;
-            // 
             // sourceOpenButton
             // 
-            this.sourceOpenButton.Location = new System.Drawing.Point(681, 222);
+            this.sourceOpenButton.Location = new System.Drawing.Point(681, 220);
             this.sourceOpenButton.Name = "sourceOpenButton";
             this.sourceOpenButton.Size = new System.Drawing.Size(75, 23);
             this.sourceOpenButton.TabIndex = 18;
@@ -293,15 +240,41 @@
             // appendTagLabel
             // 
             this.appendTagLabel.AutoSize = true;
-            this.appendTagLabel.Location = new System.Drawing.Point(494, 391);
+            this.appendTagLabel.Location = new System.Drawing.Point(482, 396);
             this.appendTagLabel.Name = "appendTagLabel";
             this.appendTagLabel.Size = new System.Drawing.Size(66, 13);
             this.appendTagLabel.TabIndex = 20;
             this.appendTagLabel.Text = "Append Tag";
+            this.toolTip1.SetToolTip(this.appendTagLabel, "Optional tag for this backup");
             // 
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // discardButton
+            // 
+            this.discardButton.CausesValidation = false;
+            this.discardButton.Location = new System.Drawing.Point(605, 36);
+            this.discardButton.Name = "discardButton";
+            this.discardButton.Size = new System.Drawing.Size(75, 23);
+            this.discardButton.TabIndex = 22;
+            this.discardButton.Text = "Discard";
+            this.toolTip1.SetToolTip(this.discardButton, "Discard changes");
+            this.discardButton.UseVisualStyleBackColor = true;
+            this.discardButton.Click += new System.EventHandler(this.discardButton_Click);
+            // 
+            // namedFolderCheckBox
+            // 
+            this.namedFolderCheckBox.AutoSize = true;
+            this.namedFolderCheckBox.Checked = true;
+            this.namedFolderCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.namedFolderCheckBox.Location = new System.Drawing.Point(681, 320);
+            this.namedFolderCheckBox.Name = "namedFolderCheckBox";
+            this.namedFolderCheckBox.Size = new System.Drawing.Size(92, 17);
+            this.namedFolderCheckBox.TabIndex = 23;
+            this.namedFolderCheckBox.Text = "Named Folder";
+            this.toolTip1.SetToolTip(this.namedFolderCheckBox, "Backup into a subfolder named after the config name");
+            this.namedFolderCheckBox.UseVisualStyleBackColor = true;
             // 
             // progressBar
             // 
@@ -314,27 +287,59 @@
             // 
             this.errorProvider1.ContainerControl = this;
             // 
-            // discardButton
+            // numBackupsLablel
             // 
-            this.discardButton.Location = new System.Drawing.Point(605, 36);
-            this.discardButton.Name = "discardButton";
-            this.discardButton.Size = new System.Drawing.Size(75, 23);
-            this.discardButton.TabIndex = 22;
-            this.discardButton.Text = "Discard";
-            this.discardButton.UseVisualStyleBackColor = true;
-            this.discardButton.Click += new System.EventHandler(this.discardButton_Click);
+            this.numBackupsLablel.AutoSize = true;
+            this.numBackupsLablel.Location = new System.Drawing.Point(242, 140);
+            this.numBackupsLablel.Name = "numBackupsLablel";
+            this.numBackupsLablel.Size = new System.Drawing.Size(49, 13);
+            this.numBackupsLablel.TabIndex = 24;
+            this.numBackupsLablel.Text = "Backups";
+            // 
+            // lastBackupLabel
+            // 
+            this.lastBackupLabel.AutoSize = true;
+            this.lastBackupLabel.Location = new System.Drawing.Point(242, 175);
+            this.lastBackupLabel.Name = "lastBackupLabel";
+            this.lastBackupLabel.Size = new System.Drawing.Size(67, 13);
+            this.lastBackupLabel.TabIndex = 25;
+            this.lastBackupLabel.Text = "Last Backup";
+            // 
+            // numBackupsText
+            // 
+            this.numBackupsText.AutoSize = true;
+            this.numBackupsText.Location = new System.Drawing.Point(308, 140);
+            this.numBackupsText.Name = "numBackupsText";
+            this.numBackupsText.Size = new System.Drawing.Size(13, 13);
+            this.numBackupsText.TabIndex = 26;
+            this.numBackupsText.Text = "0";
+            // 
+            // lastBackupText
+            // 
+            this.lastBackupText.AutoSize = true;
+            this.lastBackupText.Location = new System.Drawing.Point(308, 175);
+            this.lastBackupText.Name = "lastBackupText";
+            this.lastBackupText.Size = new System.Drawing.Size(31, 13);
+            this.lastBackupText.TabIndex = 27;
+            this.lastBackupText.Text = "none";
             // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
+            this.CausesValidation = false;
             this.ClientSize = new System.Drawing.Size(775, 455);
+            this.Controls.Add(this.lastBackupText);
+            this.Controls.Add(this.numBackupsText);
+            this.Controls.Add(this.lastBackupLabel);
+            this.Controls.Add(this.numBackupsLablel);
+            this.Controls.Add(this.namedFolderCheckBox);
             this.Controls.Add(this.discardButton);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.appendTagLabel);
             this.Controls.Add(this.destOpenButton);
             this.Controls.Add(this.sourceOpenButton);
-            this.Controls.Add(this.useDefaultCheckBox);
             this.Controls.Add(this.performBackupButton);
             this.Controls.Add(this.tagInput);
             this.Controls.Add(this.modifyConfigButton);
@@ -363,16 +368,8 @@
 
         private System.Windows.Forms.TreeView configTreeView;
         private System.Windows.Forms.MenuStrip menuStrip;
-        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem configToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newConfigToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem setDefaultsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem backupToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem backupCurrentToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem backupAllToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem exportCurrentToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
         private System.Windows.Forms.TextBox nameInput;
         private System.Windows.Forms.TextBox descInput;
         private System.Windows.Forms.Label nameLabel;
@@ -384,15 +381,23 @@
         private System.Windows.Forms.Button modifyConfigButton;
         private System.Windows.Forms.TextBox tagInput;
         private System.Windows.Forms.Button performBackupButton;
-        private System.Windows.Forms.CheckBox useDefaultCheckBox;
         private System.Windows.Forms.Button sourceOpenButton;
         private System.Windows.Forms.Button destOpenButton;
         private System.Windows.Forms.Label appendTagLabel;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.Button discardButton;
+        private System.Windows.Forms.ToolStripMenuItem deleteConfigToolStripMenuItem;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportCurrentToolStripMenuItem;
+        private System.Windows.Forms.CheckBox namedFolderCheckBox;
+        private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.ErrorProvider errorProvider1;
-        private System.Windows.Forms.Button discardButton;
-        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
+        private System.Windows.Forms.Label lastBackupText;
+        private System.Windows.Forms.Label numBackupsText;
+        private System.Windows.Forms.Label lastBackupLabel;
+        private System.Windows.Forms.Label numBackupsLablel;
     }
 }
 

@@ -9,19 +9,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Ionic.Utils;
 
 namespace light_backup_tool
 {
     public partial class MainWindow : Form
     {
-
-        private Controller configs = new Controller();
+        
+        private ConfigContainer configs = new ConfigContainer();
 
         public MainWindow()
         {
             InitializeComponent();
             setEditMode(false);
             importAll();
+            this.CancelButton = discardButton;
 
         }
 
@@ -29,7 +31,7 @@ namespace light_backup_tool
         {
             try
             {
-                configs.importAll("configs.xml");
+                configs.importAll();
             }
             catch (IOException)
             {
@@ -65,106 +67,19 @@ namespace light_backup_tool
 
         }
 
-        private void addNewConfigToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            nameInput.Text = "";
-            descInput.Text = "";
-            sourceInput.Text = "";
-            destInput.Text = "";
-
-            configTreeView.SelectedNode = null;
-            setEditMode(true);
-
-        }
-
-        private void modifyConfigButton_Click(object sender, EventArgs e)
-        {
-            if (!nameInput.ReadOnly)
-            {
-                if (configTreeView.SelectedNode != null)
-                {
-                    Config selectedConfig = configs.get(configTreeView.SelectedNode.Name);
-                    Config c = new Config(selectedConfig.id, nameInput.Text, descInput.Text, sourceInput.Text, destInput.Text);
-                    configs.add(c);
-                    addTreeNode(c);
-                }
-                else
-                {
-                    Config c = new Config(nameInput.Text, descInput.Text, sourceInput.Text, destInput.Text);
-                    configs.add(c);
-                    addTreeNode(c);
-                }
-                configs.exportAll();
-                setEditMode(false);
-            }
-            else
-            {
-                setEditMode(true);
-            }
-
-        }
-
-        private void sourceOpenButton_Click(object sender, EventArgs e)
-        {
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-            {
-                sourceInput.Text = openFileDialog1.FileName;
-            }       
-        }
-
-        private void destOpenButton_Click(object sender, EventArgs e)
-        {
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-            {
-                destInput.Text = openFileDialog1.FileName;
-            }          
-        }
-
-        private void performBackupButton_Click(object sender, EventArgs e)
-        {
-            progressBar.Value = 0;
-            String dateFolder = DateTime.Now.ToString("yyyy-MM-dd_HH-mm");
-            String newPath = destInput.Text+"\\"+nameInput.Text+"\\"+dateFolder;
-            String filename = sourceInput.Text.Substring(sourceInput.Text.LastIndexOf('\\')+1);
-
-            String tag = tagInput.Text;
-            if (tag.Length > 0)
-            {
-                newPath += "_" + tag;
-            }
-            progressBar.Value = 20;
-            try
-            {
-                Directory.CreateDirectory(newPath);
-                progressBar.Value = 50;
-                File.Copy(sourceInput.Text, newPath + "\\" + filename);
-                progressBar.Value = 100;
-
-            }
-            catch (Exception ex)
-            {
-                showError(ex.Message);
-            }
-
-        }
-
-        private void configTreeView_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-            Config selected = configs.get(e.Node.Name);
-            loadConfig(selected);
-        }
-
         private void setEditMode(Boolean on)
         {
             nameInput.ReadOnly = !on;
             descInput.ReadOnly = !on;
             sourceInput.ReadOnly = !on;
-            destInput.ReadOnly = !on;
+            namedFolderCheckBox.Enabled = on;
+
+            destInput.ReadOnly = !on; //|| useDefaultCheckBox.Checked;
 
             discardButton.Visible = on;
             sourceOpenButton.Visible = on;
             destOpenButton.Visible = on;
-            useDefaultCheckBox.Visible = on;
+            //useDefaultCheckBox.Visible = on;
 
             performBackupButton.Enabled = !on;
 
@@ -177,38 +92,36 @@ namespace light_backup_tool
             else modifyConfigButton.Text = "Edit";
         }
 
+        private void reloadConfig()
+        {
+            loadConfig(configs.get(configTreeView.SelectedNode.Name));
+        }
+
 
         private void loadConfig(Config c)
         {
-            nameInput.Text = c.name;
-            descInput.Text = c.description;
-            sourceInput.Text = c.source;
-            destInput.Text = c.destination;
-            setEditMode(false);
-        }
-
-        private void exportCurrentToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            try
+            if (c == null)
             {
-                String fileName = configs.export(configs.get(configTreeView.SelectedNode.Name));
-                showNotice("Config exported to "+fileName);
+                nameInput.Text = "";
+                descInput.Text = "";
+                sourceInput.Text = "";
+                destInput.Text = "";
+                lastBackupText.Text = "none";
+                numBackupsText.Text = "0";
+                namedFolderCheckBox.Checked = true;
+                setEditMode(false);
             }
-            catch (Exception ex)
+            else
             {
-                showError(ex.Message);
+                nameInput.Text = c.name;
+                descInput.Text = c.description;
+                sourceInput.Text = c.source;
+                destInput.Text = c.destination;
+                namedFolderCheckBox.Checked = c.namedFolder;
+                numBackupsText.Text = ""+countPastBackups(c);
+                lastBackupText.Text = getLastBackup(c);
+                setEditMode(false);
             }
-
-
-        }
-
-        private void importToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-            {   
-                addTreeNode(configs.import(openFileDialog1.FileName));
-            }            
-
         }
 
         private void showError(String message)
@@ -221,12 +134,185 @@ namespace light_backup_tool
             System.Windows.Forms.MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        private String[] getBackupDirs(Config c)
+        {
+            String[] dirs;
+            if (c.namedFolder)
+            {
+                dirs = Directory.GetDirectories(c.destination + "\\" + c.name);
+            }
+            else
+            {
+                dirs = Directory.GetDirectories(c.destination);
+            }
+            return dirs;
+        }
+
+        private long countPastBackups(Config c)
+        {
+            try
+            {
+                return getBackupDirs(c).Length;
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return 0;
+            }
+        }
+
+        private String getLastBackup(Config c)
+        {
+            try
+            {
+                String[] sa = getBackupDirs(c);
+                if (sa.Length > 0)
+                {
+                    String last = sa[sa.Length - 1];
+                    return last.Substring(last.LastIndexOf("\\") + 1);
+                }
+                else
+                {
+                    return "none";
+                }
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return "none";
+            }
+            
+        }
+
+
+        /******************/
+        /* CLICK HANDLERS */
+        /******************/
+        private void addNewConfigToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            progressBar.Value = 0;
+            loadConfig(null);
+            configTreeView.SelectedNode = null;
+            setEditMode(true);
+
+        }
+
+        private void editConfigToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void modifyConfigButton_Click(object sender, EventArgs e)
+        {
+            progressBar.Value = 0;
+            if (!nameInput.ReadOnly)
+            {
+                if (configTreeView.SelectedNode != null)
+                {
+                    Config selectedConfig = configs.get(configTreeView.SelectedNode.Name);
+                    Config c = new Config(selectedConfig.id, nameInput.Text, descInput.Text, sourceInput.Text, destInput.Text, namedFolderCheckBox.Checked);
+                    configs.add(c);
+                    addTreeNode(c);
+                }
+                else
+                {
+                    Config c = new Config(nameInput.Text, descInput.Text, sourceInput.Text, destInput.Text, namedFolderCheckBox.Checked);
+                    configs.add(c);
+                    addTreeNode(c);
+                }
+                setEditMode(false);
+                reloadConfig();
+                configs.exportAll();
+            }
+            else
+            {
+                setEditMode(true);
+            }
+
+        }
+
+        private void sourceOpenButton_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialogEx fbd = new FolderBrowserDialogEx();
+            fbd.ShowNewFolderButton = false;
+            fbd.SelectedPath = sourceInput.Text;
+            fbd.ShowBothFilesAndFolders = true;
+
+
+            if (fbd.ShowDialog() == DialogResult.OK)
+            {
+                sourceInput.Text = fbd.SelectedPath;
+            }       
+        }
+
+        private void destOpenButton_Click(object sender, EventArgs e)
+        {
+            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+            {
+                destInput.Text = folderBrowserDialog1.SelectedPath;
+            }          
+        }
+
+        private void performBackupButton_Click(object sender, EventArgs e)
+        {
+            progressBar.Value = 0;
+            try
+            {
+                configs.backup(configTreeView.SelectedNode.Name, tagInput.Text);
+                progressBar.Value = 100;
+                reloadConfig();
+
+            }
+            catch (Exception ex)
+            {
+                showError(ex.Message);
+            }
+
+        }
+
+        private void configTreeView_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            progressBar.Value = 0;
+            Config selected = configs.get(e.Node.Name);
+            loadConfig(selected);
+        }
+
+
+
+        private void exportCurrentToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            progressBar.Value = 0;
+            try
+            {
+                String fileName = configs.export(configTreeView.SelectedNode.Name);
+                showNotice("Config exported to "+fileName);
+            }
+            catch (NullReferenceException ex)
+            {
+                showError(ex.StackTrace);
+            }
+
+
+        }
+
+        private void importToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            progressBar.Value = 0;
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                Config c = configs.import(openFileDialog1.FileName);
+                loadConfig(c);
+                addTreeNode(c);
+                configs.exportAll();
+            }            
+
+        }
+
+
 
         private void discardButton_Click(object sender, EventArgs e)
         {
             try
             {
-                loadConfig((Config)configTreeView.SelectedNode.Tag);
+                loadConfig(configs.get(configTreeView.SelectedNode.Name));
             }
             catch (NullReferenceException)
             {
@@ -238,6 +324,92 @@ namespace light_backup_tool
         private void editToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void deleteConfig(String id)
+        {
+            configs.remove(id);
+            configTreeView.Nodes.Remove(configTreeView.Nodes.Find(id, true)[0]);
+            loadConfig(null);
+            configs.exportAll();
+        }
+
+        private void deleteConfigToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DialogResult result = MessageBox.Show("Do you wish to delete config " + configTreeView.SelectedNode.Text, "Delete Config", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes)
+                {
+                    deleteConfig(configTreeView.SelectedNode.Name);
+                }
+            }
+            catch (NullReferenceException)
+            {
+                showError("Nothing to delete");
+            }
+
+        }
+
+        /* END CLICK HANDLERS */
+
+        /* VALIDATION HANDLERS */
+
+        private Boolean isValidPath(String s)
+        {
+            String fileName = s.Substring(s.LastIndexOf("\\") + 1);
+            String path = s.Substring(0, s.LastIndexOf("\\"));
+
+            foreach (char c in path.ToCharArray())
+            {
+                foreach (char h in Path.GetInvalidPathChars())
+                {
+                    if (c == h) return false;
+                }
+            }
+
+            return isValidFileName(fileName);
+        }
+
+        private Boolean isValidFileName(String s)
+        {
+            foreach (char c in s.ToCharArray())
+            {
+                foreach (char h in Path.GetInvalidFileNameChars())
+                {
+                    if (c == h) return false;
+                }
+            }
+            return true;
+        }
+
+        private Boolean checkExists(String path)
+        {
+            FileAttributes attr = File.GetAttributes(path);
+            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private void sourceLabel_Click(object sender, EventArgs e)
+        {
+            String source = sourceInput.Text.Substring(0, sourceInput.Text.LastIndexOf("\\"));
+            if (checkExists(source))
+            {
+                System.Diagnostics.Process.Start(source);
+            }
+            
+        }
+
+        private void destLabel_Click(object sender, EventArgs e)
+        {
+            if (checkExists(destInput.Text))
+            {
+                System.Diagnostics.Process.Start(destInput.Text);
+            }
+            
         }
 
 
