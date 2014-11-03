@@ -97,28 +97,28 @@
             // newConfigToolStripMenuItem
             // 
             this.newConfigToolStripMenuItem.Name = "newConfigToolStripMenuItem";
-            this.newConfigToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newConfigToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.newConfigToolStripMenuItem.Text = "New Config";
             this.newConfigToolStripMenuItem.Click += new System.EventHandler(this.addNewConfigToolStripMenuItem_Click);
             // 
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.importToolStripMenuItem.Text = "Import Config";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
             // 
             // exportCurrentToolStripMenuItem
             // 
             this.exportCurrentToolStripMenuItem.Name = "exportCurrentToolStripMenuItem";
-            this.exportCurrentToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exportCurrentToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.exportCurrentToolStripMenuItem.Text = "Export Config";
             this.exportCurrentToolStripMenuItem.Click += new System.EventHandler(this.exportCurrentToolStripMenuItem_Click);
             // 
             // deleteConfigToolStripMenuItem
             // 
             this.deleteConfigToolStripMenuItem.Name = "deleteConfigToolStripMenuItem";
-            this.deleteConfigToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.deleteConfigToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.deleteConfigToolStripMenuItem.Text = "Delete Config";
             this.deleteConfigToolStripMenuItem.Click += new System.EventHandler(this.deleteConfigToolStripMenuItem_Click);
             // 
@@ -304,6 +304,7 @@
             this.lastBackupLabel.Size = new System.Drawing.Size(67, 13);
             this.lastBackupLabel.TabIndex = 25;
             this.lastBackupLabel.Text = "Last Backup";
+            this.lastBackupLabel.Click += new System.EventHandler(this.lastBackupLabel_Click);
             // 
             // numBackupsText
             // 

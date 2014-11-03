@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace light_backup_tool
@@ -11,6 +12,7 @@ namespace light_backup_tool
     {
         private Dictionary<String, Config> configs = new Dictionary<String, Config>();
         private readonly String dateFormat = "yyyy-MM-dd_HH-mm";
+        private readonly String dateRegex = "\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])_(0[0-9]|1[0-9]|2[0-3])-([0-5][0-9]).*";
         private readonly String CONFIG_FILE = "configs.xml";
 
         public void add(Config c)
@@ -80,6 +82,62 @@ namespace light_backup_tool
             foreach (string filePath in Directory.GetFiles(c.source, "*",
                 SearchOption.AllDirectories))
                 File.Copy(filePath, filePath.Replace(c.source, newPath), true);
+        }
+
+        private String[] getBackupDirs(String id)
+        {
+            Config c = configs[id];
+            String[] dirs;
+            if (c.namedFolder)
+            {
+                dirs = Directory.GetDirectories(c.destination + "\\" + c.name);
+            }
+            else
+            {
+                dirs = Directory.GetDirectories(c.destination);
+            }
+            return dirs;
+        }
+
+        public long countPastBackups(String id)
+        {
+            long length = 0;
+            try
+            {
+                foreach (String s in getBackupDirs(id))
+                {
+                    Regex r = new Regex(dateRegex);
+                    Match m = r.Match(s);
+                    if (m.Success) length++;
+                }
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return 0;
+            }
+            return length;
+        }
+
+        public String getLastBackup(String id)
+        {
+            try
+            {
+                String[] sa = getBackupDirs(id);
+                if (sa.Length > 0)
+                {
+                    String last = sa[sa.Length - 1];
+                    return last.Substring(last.LastIndexOf("\\") + 1);
+                }
+                else
+                {
+                    return "none";
+                }
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return "none";
+            }
+
         }
 
 

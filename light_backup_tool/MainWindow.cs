@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ionic.Utils;
+using System.Text.RegularExpressions;
 
 namespace light_backup_tool
 {
@@ -109,6 +110,7 @@ namespace light_backup_tool
                 lastBackupText.Text = "none";
                 numBackupsText.Text = "0";
                 namedFolderCheckBox.Checked = true;
+                tagInput.Text = "";
                 setEditMode(false);
             }
             else
@@ -118,8 +120,9 @@ namespace light_backup_tool
                 sourceInput.Text = c.source;
                 destInput.Text = c.destination;
                 namedFolderCheckBox.Checked = c.namedFolder;
-                numBackupsText.Text = ""+countPastBackups(c);
-                lastBackupText.Text = getLastBackup(c);
+                numBackupsText.Text = ""+configs.countPastBackups(c.id);
+                lastBackupText.Text = configs.getLastBackup(c.id);
+                tagInput.Text = "";
                 setEditMode(false);
             }
         }
@@ -134,53 +137,7 @@ namespace light_backup_tool
             System.Windows.Forms.MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private String[] getBackupDirs(Config c)
-        {
-            String[] dirs;
-            if (c.namedFolder)
-            {
-                dirs = Directory.GetDirectories(c.destination + "\\" + c.name);
-            }
-            else
-            {
-                dirs = Directory.GetDirectories(c.destination);
-            }
-            return dirs;
-        }
 
-        private long countPastBackups(Config c)
-        {
-            try
-            {
-                return getBackupDirs(c).Length;
-            }
-            catch (DirectoryNotFoundException)
-            {
-                return 0;
-            }
-        }
-
-        private String getLastBackup(Config c)
-        {
-            try
-            {
-                String[] sa = getBackupDirs(c);
-                if (sa.Length > 0)
-                {
-                    String last = sa[sa.Length - 1];
-                    return last.Substring(last.LastIndexOf("\\") + 1);
-                }
-                else
-                {
-                    return "none";
-                }
-            }
-            catch (DirectoryNotFoundException)
-            {
-                return "none";
-            }
-            
-        }
 
 
         /******************/
@@ -385,12 +342,20 @@ namespace light_backup_tool
 
         private Boolean checkExists(String path)
         {
-            FileAttributes attr = File.GetAttributes(path);
-            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+            try
             {
-                return true;
+                FileAttributes attr = File.GetAttributes(path);
+                if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                {
+                    return true;
+                }
+                return false;
             }
-            return false;
+            catch (DirectoryNotFoundException)
+            {
+                return false;
+            }
+
         }
 
         private void sourceLabel_Click(object sender, EventArgs e)
@@ -410,6 +375,23 @@ namespace light_backup_tool
                 System.Diagnostics.Process.Start(destInput.Text);
             }
             
+        }
+
+        private void lastBackupLabel_Click(object sender, EventArgs e)
+        {
+            String source = "";
+            if(namedFolderCheckBox.Checked) {
+                source = destInput.Text + "\\" + nameInput.Text + "\\" + lastBackupText.Text;
+            }
+            else {
+                source = destInput.Text + "\\" + lastBackupText.Text;
+            }
+
+            Console.WriteLine(source);
+            if (checkExists(source))
+            {
+                System.Diagnostics.Process.Start(source);
+            }
         }
 
 
