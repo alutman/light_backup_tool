@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="ConfigContainer.cs" />
+    <Compile Include="Controller.cs" />
     <Compile Include="FolderBrowserDialogEx.cs">
       <SubType>Component</SubType>
     </Compile>

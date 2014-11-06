@@ -11,20 +11,22 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ionic.Utils;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace light_backup_tool
 {
     public partial class MainWindow : Form
     {
-        
-        private ConfigContainer configs = new ConfigContainer();
+
+        private ConfigContainer configs;
 
         public MainWindow()
         {
             InitializeComponent();
             setEditMode(false);
-            importAll();
             this.CancelButton = discardButton;
+            configs = new ConfigContainer(new Controller(this));
+            importAll();
 
         }
 
@@ -74,6 +76,7 @@ namespace light_backup_tool
             descInput.ReadOnly = !on;
             sourceInput.ReadOnly = !on;
             namedFolderCheckBox.Enabled = on;
+            tagInput.ReadOnly = on;
 
             destInput.ReadOnly = !on; //|| useDefaultCheckBox.Checked;
 
@@ -91,6 +94,7 @@ namespace light_backup_tool
 
             if (on) modifyConfigButton.Text = "Save";
             else modifyConfigButton.Text = "Edit";
+            clearErrors();
         }
 
         private void reloadConfig()
@@ -111,6 +115,7 @@ namespace light_backup_tool
                 numBackupsText.Text = "0";
                 namedFolderCheckBox.Checked = true;
                 tagInput.Text = "";
+                configTreeView.SelectedNode = null;
                 setEditMode(false);
             }
             else
@@ -123,6 +128,12 @@ namespace light_backup_tool
                 numBackupsText.Text = ""+configs.countPastBackups(c.id);
                 lastBackupText.Text = configs.getLastBackup(c.id);
                 tagInput.Text = "";
+                try
+                {
+                    configTreeView.SelectedNode = configTreeView.Nodes.Find(c.id, true)[0];
+                }
+                catch (IndexOutOfRangeException) { }
+                
                 setEditMode(false);
             }
         }
@@ -135,6 +146,24 @@ namespace light_backup_tool
         private void showNotice(String message)
         {
             System.Windows.Forms.MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void clearErrors()
+        {
+            errorProvider1.SetError(nameInput, "");
+            errorProvider1.SetError(sourceInput, "");
+            errorProvider1.SetError(destInput, "");
+            errorProvider1.SetError(lastBackupText, "");
+        }
+
+        public void setProgressBar(int value)
+        {
+            progressBar.Value = Math.Min(Math.Abs(value), 100);
+        }
+
+        public void addToProgressBar(int value)
+        {
+            progressBar.Value = Math.Min(100, progressBar.Value + Math.Abs(value));   
         }
 
 
@@ -192,6 +221,8 @@ namespace light_backup_tool
             fbd.ShowNewFolderButton = false;
             fbd.SelectedPath = sourceInput.Text;
             fbd.ShowBothFilesAndFolders = true;
+            fbd.DontIncludeNetworkFoldersBelowDomainLevel = true;
+
 
 
             if (fbd.ShowDialog() == DialogResult.OK)
@@ -208,29 +239,78 @@ namespace light_backup_tool
             }          
         }
 
+        private void backupMode(Boolean b)
+        {
+            menuStrip.Enabled = !b;
+            modifyConfigButton.Enabled = !b;
+            tagInput.Enabled = !b;
+            configTreeView.Enabled = !b;
+            if (b)
+            {                
+                performBackupButton.Text = "Cancel";
+            }
+            else
+            {
+                performBackupButton.Text = "Backup";
+            }
+            
+        }
+
         private void performBackupButton_Click(object sender, EventArgs e)
         {
+            if (performBackupButton.Text == "Backup")
+            {
+                //backupMode(true);
+                progressBar.Value = 0;
+                try
+                {
+                    configs.backup(configTreeView.SelectedNode.Name, tagInput.Text);
+                    progressBar.Value = 100;
+                    reloadConfig();
+                    //backupMode(false);
+
+                }
+                catch (Exception ex)
+                {
+                    showError(ex.Message);
+                }
+            }
+            else if (performBackupButton.Text == "Cancel")
+            {
+                //Kill thread
+                //Notify
+                //backupMode(false);
+            }
+            
+
+        }
+        private void selectNode(String id)
+        {
+            clearErrors();
             progressBar.Value = 0;
-            try
-            {
-                configs.backup(configTreeView.SelectedNode.Name, tagInput.Text);
-                progressBar.Value = 100;
-                reloadConfig();
-
-            }
-            catch (Exception ex)
-            {
-                showError(ex.Message);
-            }
-
+            Config selected = configs.get(id);
+            loadConfig(selected);
         }
 
         private void configTreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            progressBar.Value = 0;
-            Config selected = configs.get(e.Node.Name);
-            loadConfig(selected);
+            if (configTreeView.SelectedNode != null && nameInput.Text.Length == 0)
+            {
+                selectNode(e.Node.Name);
+            }
+            
         }
+
+        private void configTreeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            selectNode(e.Node.Name);
+            if (MouseButtons.Right == e.Button)
+            {
+                contextMenuStrip1.Show();
+            }
+            
+        }
+
 
 
 
@@ -273,12 +353,12 @@ namespace light_backup_tool
             }
             catch (NullReferenceException)
             {
-                setEditMode(false);
+                loadConfig(null);
             }
             
         }
 
-        private void editToolStripMenuItem_Click(object sender, EventArgs e)
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
         }
@@ -287,7 +367,10 @@ namespace light_backup_tool
         {
             configs.remove(id);
             configTreeView.Nodes.Remove(configTreeView.Nodes.Find(id, true)[0]);
-            loadConfig(null);
+            if (configTreeView.SelectedNode == null)
+            {
+                loadConfig(null);
+            }
             configs.exportAll();
         }
 
@@ -299,6 +382,7 @@ namespace light_backup_tool
                 if (result == DialogResult.Yes)
                 {
                     deleteConfig(configTreeView.SelectedNode.Name);
+
                 }
             }
             catch (NullReferenceException)
@@ -308,24 +392,84 @@ namespace light_backup_tool
 
         }
 
+
+        private void sourceLabel_Click(object sender, EventArgs e)
+        {
+            errorProvider1.SetError(sourceInput, "");
+            int x = sourceInput.Text.LastIndexOf("\\");
+
+            if (x < 0)
+            {
+                errorProvider1.SetError(sourceInput, "Not a valid path");
+                return;
+            }
+
+            String source = sourceInput.Text.Substring(0, x);
+
+            if (configs.checkExists(source))
+            {
+                System.Diagnostics.Process.Start(source);
+            }
+            else
+            {
+                errorProvider1.SetError(sourceInput, "Path does not exist");
+            }
+
+        }
+
+        private void destLabel_Click(object sender, EventArgs e)
+        {
+            errorProvider1.SetError(destInput, "");
+            if (configs.checkExists(destInput.Text))
+            {
+                System.Diagnostics.Process.Start(destInput.Text);
+            }
+            else
+            {
+                errorProvider1.SetError(destInput, "Path does not exist");
+            }
+
+
+        }
+
+        private void lastBackupLabel_Click(object sender, EventArgs e)
+        {
+            errorProvider1.SetError(lastBackupText, "");
+            String source = "";
+            if (namedFolderCheckBox.Checked)
+            {
+                source = destInput.Text + "\\" + nameInput.Text + "\\" + lastBackupText.Text;
+            }
+            else
+            {
+                source = destInput.Text + "\\" + lastBackupText.Text;
+            }
+            if (configs.checkExists(source))
+            {
+                System.Diagnostics.Process.Start(source);
+            }
+            else
+            {
+                errorProvider1.SetError(lastBackupText, "Last backup does not exist");
+            }
+        }
+
         /* END CLICK HANDLERS */
 
         /* VALIDATION HANDLERS */
 
+
+
         private Boolean isValidPath(String s)
         {
-            String fileName = s.Substring(s.LastIndexOf("\\") + 1);
-            String path = s.Substring(0, s.LastIndexOf("\\"));
-
-            foreach (char c in path.ToCharArray())
+            foreach (char c in s.ToCharArray())
             {
                 foreach (char h in Path.GetInvalidPathChars())
                 {
                     if (c == h) return false;
                 }
             }
-
-            return isValidFileName(fileName);
+            return true;
         }
 
         private Boolean isValidFileName(String s)
@@ -340,61 +484,50 @@ namespace light_backup_tool
             return true;
         }
 
-        private Boolean checkExists(String path)
+        private void nameInput_Validating(object sender, CancelEventArgs e)
         {
-            try
-            {
-                FileAttributes attr = File.GetAttributes(path);
-                if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
-                {
-                    return true;
-                }
-                return false;
-            }
-            catch (DirectoryNotFoundException)
-            {
-                return false;
-            }
-
-        }
-
-        private void sourceLabel_Click(object sender, EventArgs e)
-        {
-            String source = sourceInput.Text.Substring(0, sourceInput.Text.LastIndexOf("\\"));
-            if (checkExists(source))
-            {
-                System.Diagnostics.Process.Start(source);
+            if (nameInput.ReadOnly) return;
+            if(!isValidFileName(nameInput.Text) || nameInput.Text.Length <= 0) {
+                e.Cancel = true;
+                errorProvider1.SetError((Control)sender, "Invalid filename/length");
             }
             
         }
 
-        private void destLabel_Click(object sender, EventArgs e)
+        private void sourceInput_Validating(object sender, CancelEventArgs e)
         {
-            if (checkExists(destInput.Text))
+            if (sourceInput.ReadOnly) return;
+            if (!isValidPath(sourceInput.Text))
             {
-                System.Diagnostics.Process.Start(destInput.Text);
-            }
-            
-        }
-
-        private void lastBackupLabel_Click(object sender, EventArgs e)
-        {
-            String source = "";
-            if(namedFolderCheckBox.Checked) {
-                source = destInput.Text + "\\" + nameInput.Text + "\\" + lastBackupText.Text;
-            }
-            else {
-                source = destInput.Text + "\\" + lastBackupText.Text;
-            }
-
-            Console.WriteLine(source);
-            if (checkExists(source))
-            {
-                System.Diagnostics.Process.Start(source);
+                e.Cancel = true;
+                errorProvider1.SetError((Control)sender, "Invalid path");
             }
         }
 
+        private void destInput_Validating(object sender, CancelEventArgs e)
+        {
+            if (destInput.ReadOnly) return;
+            if (!isValidPath(destInput.Text))
+            {
+                e.Cancel = true;
+                errorProvider1.SetError((Control)sender, "Invalid path");
+            }
+        }
 
+        private void tagInput_Validating(object sender, CancelEventArgs e)
+        {
+            if (tagInput.ReadOnly) return;
+            if (!isValidFileName(tagInput.Text))
+            {
+                e.Cancel = true;
+                errorProvider1.SetError((Control)sender, "Invalid chars in tag");
+            }
+        }
+
+        private void InputValidated(object sender, EventArgs e)
+        {
+            errorProvider1.SetError((Control)sender, "");
+        }
 
     }
 }

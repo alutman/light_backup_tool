@@ -30,18 +30,19 @@
         {
             this.components = new System.ComponentModel.Container();
             this.configTreeView = new System.Windows.Forms.TreeView();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.backupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.configToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.newConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportCurrentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nameInput = new System.Windows.Forms.TextBox();
             this.descInput = new System.Windows.Forms.TextBox();
             this.nameLabel = new System.Windows.Forms.Label();
             this.descLabel = new System.Windows.Forms.Label();
-            this.sourceLabel = new System.Windows.Forms.Label();
-            this.destLabel = new System.Windows.Forms.Label();
+            this.sourceLabel = new System.Windows.Forms.LinkLabel();
+            this.destLabel = new System.Windows.Forms.LinkLabel();
             this.sourceInput = new System.Windows.Forms.TextBox();
             this.destInput = new System.Windows.Forms.TextBox();
             this.modifyConfigButton = new System.Windows.Forms.Button();
@@ -58,24 +59,53 @@
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.numBackupsLablel = new System.Windows.Forms.Label();
-            this.lastBackupLabel = new System.Windows.Forms.Label();
+            this.lastBackupLabel = new System.Windows.Forms.LinkLabel();
             this.numBackupsText = new System.Windows.Forms.Label();
             this.lastBackupText = new System.Windows.Forms.Label();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.newConfigToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip1.SuspendLayout();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // configTreeView
             // 
+            this.configTreeView.ContextMenuStrip = this.contextMenuStrip1;
             this.configTreeView.Location = new System.Drawing.Point(12, 27);
             this.configTreeView.Name = "configTreeView";
             this.configTreeView.Size = new System.Drawing.Size(224, 418);
             this.configTreeView.TabIndex = 1;
             this.configTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.configTreeView_AfterSelect);
+            this.configTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.configTreeView_NodeMouseClick);
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.backupToolStripMenuItem,
+            this.deleteToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(108, 48);
+            // 
+            // backupToolStripMenuItem
+            // 
+            this.backupToolStripMenuItem.Name = "backupToolStripMenuItem";
+            this.backupToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.backupToolStripMenuItem.Text = "New";
+            this.backupToolStripMenuItem.Click += new System.EventHandler(this.addNewConfigToolStripMenuItem_Click);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.deleteToolStripMenuItem.Text = "Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteConfigToolStripMenuItem_Click);
             // 
             // menuStrip
             // 
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem,
             this.configToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
@@ -86,20 +116,11 @@
             // configToolStripMenuItem
             // 
             this.configToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newConfigToolStripMenuItem,
             this.importToolStripMenuItem,
-            this.exportCurrentToolStripMenuItem,
-            this.deleteConfigToolStripMenuItem});
+            this.exportCurrentToolStripMenuItem});
             this.configToolStripMenuItem.Name = "configToolStripMenuItem";
             this.configToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
             this.configToolStripMenuItem.Text = "Config";
-            // 
-            // newConfigToolStripMenuItem
-            // 
-            this.newConfigToolStripMenuItem.Name = "newConfigToolStripMenuItem";
-            this.newConfigToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
-            this.newConfigToolStripMenuItem.Text = "New Config";
-            this.newConfigToolStripMenuItem.Click += new System.EventHandler(this.addNewConfigToolStripMenuItem_Click);
             // 
             // importToolStripMenuItem
             // 
@@ -115,19 +136,14 @@
             this.exportCurrentToolStripMenuItem.Text = "Export Config";
             this.exportCurrentToolStripMenuItem.Click += new System.EventHandler(this.exportCurrentToolStripMenuItem_Click);
             // 
-            // deleteConfigToolStripMenuItem
-            // 
-            this.deleteConfigToolStripMenuItem.Name = "deleteConfigToolStripMenuItem";
-            this.deleteConfigToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
-            this.deleteConfigToolStripMenuItem.Text = "Delete Config";
-            this.deleteConfigToolStripMenuItem.Click += new System.EventHandler(this.deleteConfigToolStripMenuItem_Click);
-            // 
             // nameInput
             // 
             this.nameInput.Location = new System.Drawing.Point(311, 40);
             this.nameInput.Name = "nameInput";
             this.nameInput.Size = new System.Drawing.Size(199, 20);
             this.nameInput.TabIndex = 5;
+            this.nameInput.Validating += new System.ComponentModel.CancelEventHandler(this.nameInput_Validating);
+            this.nameInput.Validated += new System.EventHandler(this.InputValidated);
             // 
             // descInput
             // 
@@ -163,6 +179,7 @@
             this.sourceLabel.Name = "sourceLabel";
             this.sourceLabel.Size = new System.Drawing.Size(41, 13);
             this.sourceLabel.TabIndex = 9;
+            this.sourceLabel.TabStop = true;
             this.sourceLabel.Text = "Source";
             this.sourceLabel.Click += new System.EventHandler(this.sourceLabel_Click);
             // 
@@ -173,6 +190,7 @@
             this.destLabel.Name = "destLabel";
             this.destLabel.Size = new System.Drawing.Size(60, 13);
             this.destLabel.TabIndex = 10;
+            this.destLabel.TabStop = true;
             this.destLabel.Text = "Destination";
             this.destLabel.Click += new System.EventHandler(this.destLabel_Click);
             // 
@@ -182,6 +200,8 @@
             this.sourceInput.Name = "sourceInput";
             this.sourceInput.Size = new System.Drawing.Size(352, 20);
             this.sourceInput.TabIndex = 11;
+            this.sourceInput.Validating += new System.ComponentModel.CancelEventHandler(this.sourceInput_Validating);
+            this.sourceInput.Validated += new System.EventHandler(this.InputValidated);
             // 
             // destInput
             // 
@@ -189,6 +209,8 @@
             this.destInput.Name = "destInput";
             this.destInput.Size = new System.Drawing.Size(352, 20);
             this.destInput.TabIndex = 12;
+            this.destInput.Validating += new System.ComponentModel.CancelEventHandler(this.destInput_Validating);
+            this.destInput.Validated += new System.EventHandler(this.InputValidated);
             // 
             // modifyConfigButton
             // 
@@ -206,6 +228,8 @@
             this.tagInput.Name = "tagInput";
             this.tagInput.Size = new System.Drawing.Size(109, 20);
             this.tagInput.TabIndex = 15;
+            this.tagInput.Validating += new System.ComponentModel.CancelEventHandler(this.tagInput_Validating);
+            this.tagInput.Validated += new System.EventHandler(this.InputValidated);
             // 
             // performBackupButton
             // 
@@ -303,6 +327,7 @@
             this.lastBackupLabel.Name = "lastBackupLabel";
             this.lastBackupLabel.Size = new System.Drawing.Size(67, 13);
             this.lastBackupLabel.TabIndex = 25;
+            this.lastBackupLabel.TabStop = true;
             this.lastBackupLabel.Text = "Last Backup";
             this.lastBackupLabel.Click += new System.EventHandler(this.lastBackupLabel_Click);
             // 
@@ -323,6 +348,29 @@
             this.lastBackupText.Size = new System.Drawing.Size(31, 13);
             this.lastBackupText.TabIndex = 27;
             this.lastBackupText.Text = "none";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.newConfigToolStripMenuItem1,
+            this.exitToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // newConfigToolStripMenuItem1
+            // 
+            this.newConfigToolStripMenuItem1.Name = "newConfigToolStripMenuItem1";
+            this.newConfigToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.newConfigToolStripMenuItem1.Text = "New Config";
+            this.newConfigToolStripMenuItem1.Click += new System.EventHandler(this.addNewConfigToolStripMenuItem_Click);
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -357,6 +405,7 @@
             this.MainMenuStrip = this.menuStrip;
             this.Name = "MainWindow";
             this.Text = "Light Backup Tool";
+            this.contextMenuStrip1.ResumeLayout(false);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
@@ -370,13 +419,12 @@
         private System.Windows.Forms.TreeView configTreeView;
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem configToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem newConfigToolStripMenuItem;
         private System.Windows.Forms.TextBox nameInput;
         private System.Windows.Forms.TextBox descInput;
         private System.Windows.Forms.Label nameLabel;
         private System.Windows.Forms.Label descLabel;
-        private System.Windows.Forms.Label sourceLabel;
-        private System.Windows.Forms.Label destLabel;
+        private System.Windows.Forms.LinkLabel sourceLabel;
+        private System.Windows.Forms.LinkLabel destLabel;
         private System.Windows.Forms.TextBox sourceInput;
         private System.Windows.Forms.TextBox destInput;
         private System.Windows.Forms.Button modifyConfigButton;
@@ -387,7 +435,6 @@
         private System.Windows.Forms.Label appendTagLabel;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Button discardButton;
-        private System.Windows.Forms.ToolStripMenuItem deleteConfigToolStripMenuItem;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportCurrentToolStripMenuItem;
@@ -397,8 +444,14 @@
         private System.Windows.Forms.ErrorProvider errorProvider1;
         private System.Windows.Forms.Label lastBackupText;
         private System.Windows.Forms.Label numBackupsText;
-        private System.Windows.Forms.Label lastBackupLabel;
+        private System.Windows.Forms.LinkLabel lastBackupLabel;
         private System.Windows.Forms.Label numBackupsLablel;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem backupToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem newConfigToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
     }
 }
 

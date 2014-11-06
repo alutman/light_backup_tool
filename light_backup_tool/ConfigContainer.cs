@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace light_backup_tool
@@ -14,6 +15,13 @@ namespace light_backup_tool
         private readonly String dateFormat = "yyyy-MM-dd_HH-mm";
         private readonly String dateRegex = "\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])_(0[0-9]|1[0-9]|2[0-3])-([0-5][0-9]).*";
         private readonly String CONFIG_FILE = "configs.xml";
+
+        private Controller controller;
+
+        public ConfigContainer(Controller controller)
+        {
+            this.controller = controller;
+        }
 
         public void add(Config c)
         {
@@ -26,6 +34,38 @@ namespace light_backup_tool
         public Config get(String id)
         {
             return configs[id];
+        }
+
+        public Boolean checkExists(String path)
+        {
+            try
+            {
+                FileAttributes attr = File.GetAttributes(path);
+                if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                if (ex is DirectoryNotFoundException ||
+                    ex is FileNotFoundException ||
+                    ex is ArgumentException)
+                {
+                    return false;
+                }
+                throw;
+            }
+        }
+
+        private void makeDirSoft(String path)
+        {
+            if (checkExists(path))
+            {
+                throw new IOException(path+" already exists");
+            }
+            Directory.CreateDirectory(path);
         }
 
         public void backup(String id, String tag)
@@ -42,6 +82,8 @@ namespace light_backup_tool
 
 
         }
+
+
         private void backupFile(String id, String tag)
         {
             Config c = configs[id];
@@ -54,9 +96,12 @@ namespace light_backup_tool
                 newPath += "_" + tag;
             }
 
-            Directory.CreateDirectory(newPath);
+            makeDirSoft(newPath);
+            controller.addToProgressBar(50);
             File.Copy(c.source, newPath + "\\" + filename);
         }
+
+
 
         private void backupFolder(String id, String tag)
         {
@@ -71,51 +116,81 @@ namespace light_backup_tool
 
             newPath += c.source.Substring(c.source.LastIndexOf('\\'));
 
-            Directory.CreateDirectory(newPath);
+            makeDirSoft(newPath);
 
-            //Now Create all of the directories
-            foreach (string dirPath in Directory.GetDirectories(c.source, "*",
-                SearchOption.AllDirectories))
+            String[] allDirs = Directory.GetDirectories(c.source, "*", SearchOption.AllDirectories);
+
+            double dirPart = 40d / (double)allDirs.Length;
+            double count = 0;
+
+            foreach (string dirPath in allDirs)
+            {
+                count += dirPart;
+                if (count >= 1)
+                {
+                    controller.addToProgressBar((int)Math.Max(count, dirPart));
+                    count = 0;
+                }
                 Directory.CreateDirectory(dirPath.Replace(c.source, newPath));
+            }
+               
 
-            //Copy all the files & Replaces any files with the same name
-            foreach (string filePath in Directory.GetFiles(c.source, "*",
-                SearchOption.AllDirectories))
+            String[] allFiles = Directory.GetFiles(c.source, "*", SearchOption.AllDirectories);
+
+            double filePart = 60d / (double)allFiles.Length;
+            count = 0;
+
+            foreach (string filePath in allFiles)
+            {
+                count += filePart;
+                if (count >= 1)
+                {
+                    controller.addToProgressBar((int)Math.Max(count, filePart));
+                    count = 0;
+                }
+                
                 File.Copy(filePath, filePath.Replace(c.source, newPath), true);
+            }
+                
         }
 
         private String[] getBackupDirs(String id)
         {
             Config c = configs[id];
+            List<String> backupDirs = new List<String>();
             String[] dirs;
-            if (c.namedFolder)
-            {
-                dirs = Directory.GetDirectories(c.destination + "\\" + c.name);
-            }
-            else
-            {
-                dirs = Directory.GetDirectories(c.destination);
-            }
-            return dirs;
-        }
-
-        public long countPastBackups(String id)
-        {
-            long length = 0;
             try
             {
-                foreach (String s in getBackupDirs(id))
+                if (c.namedFolder)
                 {
-                    Regex r = new Regex(dateRegex);
-                    Match m = r.Match(s);
-                    if (m.Success) length++;
+                    dirs = Directory.GetDirectories(c.destination + "\\" + c.name);
+
+                }
+                else
+                {
+                    dirs = Directory.GetDirectories(c.destination);
                 }
             }
             catch (DirectoryNotFoundException)
             {
-                return 0;
+                return new String[0];
             }
-            return length;
+
+            foreach (String s in dirs)
+            {
+                Regex r = new Regex(dateRegex);
+                Match m = r.Match(s);
+                if (m.Success)
+                {
+                    backupDirs.Add(s);
+                }
+            }
+            return backupDirs.ToArray();
+        }
+
+        public long countPastBackups(String id)
+        {
+            return getBackupDirs(id).Length;
         }
 
         public String getLastBackup(String id)

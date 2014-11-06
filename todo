@@ -1,0 +1,2 @@
+* Perform backup operations in a separate thread
+* Clean up code
