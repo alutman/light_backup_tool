@@ -23,6 +23,7 @@ namespace light_backup_tool
         public MainWindow()
         {
             InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
             setEditMode(false);
             this.CancelButton = discardButton;
             configs = new ConfigContainer(new Controller(this));
@@ -294,11 +295,7 @@ namespace light_backup_tool
 
         private void configTreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (configTreeView.SelectedNode != null && nameInput.Text.Length == 0)
-            {
-                selectNode(e.Node.Name);
-            }
-            
+            selectNode(e.Node.Name);
         }
 
         private void configTreeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
