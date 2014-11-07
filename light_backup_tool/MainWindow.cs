@@ -12,13 +12,14 @@ using System.Windows.Forms;
 using Ionic.Utils;
 using System.Text.RegularExpressions;
 using System.Threading;
+using light_backup_tool.model;
 
 namespace light_backup_tool
 {
     public partial class MainWindow : Form
     {
 
-        private ConfigContainer configs;
+        private ConfigHandler configs;
 
         public MainWindow()
         {
@@ -26,9 +27,8 @@ namespace light_backup_tool
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             setEditMode(false);
             this.CancelButton = discardButton;
-            configs = new ConfigContainer(new Controller(this));
+            configs = new ConfigHandler("configs.xml", new Controller(this));
             importAll();
-
         }
 
         private void importAll()
@@ -43,7 +43,7 @@ namespace light_backup_tool
                 return;
             }
 
-            Config[] allImported = configs.all();
+            Config[] allImported = configs.allConfigs();
             for (int i = 0; i < allImported.Length; i++)
             {
                 TreeNode n = new TreeNode();
@@ -139,7 +139,7 @@ namespace light_backup_tool
             }
         }
 
-        private void showError(String message)
+        public void showError(String message)
         {
             System.Windows.Forms.MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
@@ -157,14 +157,45 @@ namespace light_backup_tool
             errorProvider1.SetError(lastBackupText, "");
         }
 
+        private delegate void setProgressBarDelegate(int value);
+
         public void setProgressBar(int value)
         {
-            progressBar.Value = Math.Min(Math.Abs(value), 100);
+            if (progressBar.InvokeRequired)
+            {
+                this.Invoke(new setProgressBarDelegate(setProgressBar), new object[] { value });
+            }
+            else
+            {
+                progressBar.Value = Math.Min(Math.Abs(value), 100);
+                if (progressBar.Value == 100)
+                {
+                    backupMode(false);
+                }
+                if (progressBar.Value == 0)
+                {
+                    backupMode(false);
+                }
+            }
+
         }
+        private delegate void addToProgressBarDelegate(int value);
 
         public void addToProgressBar(int value)
         {
-            progressBar.Value = Math.Min(100, progressBar.Value + Math.Abs(value));   
+            if (progressBar.InvokeRequired)
+            {
+                this.Invoke(new addToProgressBarDelegate(addToProgressBar), new object[] { value });
+            }
+            else
+            {
+                progressBar.Value = Math.Min(100, progressBar.Value + Math.Abs(value));
+                if (progressBar.Value == 100)
+                {
+                    backupMode(false);
+                }
+            }
+            
         }
 
 
@@ -195,14 +226,18 @@ namespace light_backup_tool
                 if (configTreeView.SelectedNode != null)
                 {
                     Config selectedConfig = configs.get(configTreeView.SelectedNode.Name);
-                    Config c = new Config(selectedConfig.id, nameInput.Text, descInput.Text, sourceInput.Text, destInput.Text, namedFolderCheckBox.Checked);
-                    configs.add(c);
-                    addTreeNode(c);
+                    selectedConfig.name = nameInput.Text;
+                    selectedConfig.description = descInput.Text;
+                    selectedConfig.source = sourceInput.Text;
+                    selectedConfig.destination = destInput.Text;
+                    selectedConfig.namedFolder = namedFolderCheckBox.Checked;
+                    configs.put(selectedConfig);
+                    addTreeNode(selectedConfig);
                 }
                 else
                 {
                     Config c = new Config(nameInput.Text, descInput.Text, sourceInput.Text, destInput.Text, namedFolderCheckBox.Checked);
-                    configs.add(c);
+                    configs.put(c);
                     addTreeNode(c);
                 }
                 setEditMode(false);
@@ -252,6 +287,7 @@ namespace light_backup_tool
             }
             else
             {
+                reloadConfig();
                 performBackupButton.Text = "Backup";
             }
             
@@ -261,15 +297,11 @@ namespace light_backup_tool
         {
             if (performBackupButton.Text == "Backup")
             {
-                //backupMode(true);
+                backupMode(true);
                 progressBar.Value = 0;
                 try
                 {
                     configs.backup(configTreeView.SelectedNode.Name, tagInput.Text);
-                    progressBar.Value = 100;
-                    reloadConfig();
-                    //backupMode(false);
-
                 }
                 catch (Exception ex)
                 {
@@ -278,9 +310,8 @@ namespace light_backup_tool
             }
             else if (performBackupButton.Text == "Cancel")
             {
-                //Kill thread
-                //Notify
-                //backupMode(false);
+                configs.stop();
+                backupMode(false);
             }
             
 
@@ -403,7 +434,7 @@ namespace light_backup_tool
 
             String source = sourceInput.Text.Substring(0, x);
 
-            if (configs.checkExists(source))
+            if (FileTools.checkExists(source))
             {
                 System.Diagnostics.Process.Start(source);
             }
@@ -417,7 +448,7 @@ namespace light_backup_tool
         private void destLabel_Click(object sender, EventArgs e)
         {
             errorProvider1.SetError(destInput, "");
-            if (configs.checkExists(destInput.Text))
+            if (FileTools.checkExists(destInput.Text))
             {
                 System.Diagnostics.Process.Start(destInput.Text);
             }
@@ -441,7 +472,7 @@ namespace light_backup_tool
             {
                 source = destInput.Text + "\\" + lastBackupText.Text;
             }
-            if (configs.checkExists(source))
+            if (FileTools.checkExists(source))
             {
                 System.Diagnostics.Process.Start(source);
             }

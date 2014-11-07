@@ -14,10 +14,19 @@ namespace light_backup_tool
         {
             this.window = window;
         }
+        public void setProgressBar(int value)
+        {
+            window.setProgressBar(value);
+        }
 
         public void addToProgressBar(int value)
         {
             window.addToProgressBar(value);
+        }
+
+        public void sendError(String message)
+        {
+            window.showError(message);
         }
     }
 }

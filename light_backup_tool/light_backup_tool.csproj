@@ -45,8 +45,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config.cs" />
-    <Compile Include="ConfigContainer.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="FolderBrowserDialogEx.cs">
       <SubType>Component</SubType>
@@ -57,6 +55,11 @@
     <Compile Include="MainWindow.Designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="model\BackupThread.cs" />
+    <Compile Include="model\Config.cs" />
+    <Compile Include="model\ConfigHandler.cs" />
+    <Compile Include="model\ExportImportHandler.cs" />
+    <Compile Include="model\FileTools.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="MainWindow.resx">
