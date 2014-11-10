@@ -1,5 +1,3 @@
 * Clean up code
-* Fix being able to save a config with no name by hitting save right away
-* Handle situations where path 
-    * Not real (e.g. rD:\blah:\)
-    * Weird (somthing is\wrong)
+* Option to specify subfolder format
+* Default folder option

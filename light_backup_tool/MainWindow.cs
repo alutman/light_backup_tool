@@ -18,7 +18,8 @@ namespace light_backup_tool
 {
     public partial class MainWindow : Form
     {
-
+        private static readonly String TITLE = "Light Backup Tool";
+        private static readonly String VERSION = "0.2.0";
         private ConfigHandler configs;
 
         public MainWindow()
@@ -141,12 +142,12 @@ namespace light_backup_tool
 
         public void showError(String message)
         {
-            System.Windows.Forms.MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
         private void showNotice(String message)
         {
-            System.Windows.Forms.MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void clearErrors()
@@ -223,6 +224,11 @@ namespace light_backup_tool
             progressBar.Value = 0;
             if (!nameInput.ReadOnly)
             {
+                nameInput_Validating(nameInput, new CancelEventArgs());
+                if (!errorProvider1.GetError(nameInput).Equals(""))
+                {
+                    return;
+                }
                 if (configTreeView.SelectedNode != null)
                 {
                     Config selectedConfig = configs.get(configTreeView.SelectedNode.Name);
@@ -482,6 +488,12 @@ namespace light_backup_tool
             }
         }
 
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(MainWindow.TITLE+"\nVersion v"+MainWindow.VERSION, "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
         /* END CLICK HANDLERS */
 
         /* VALIDATION HANDLERS */
@@ -556,6 +568,7 @@ namespace light_backup_tool
         {
             errorProvider1.SetError((Control)sender, "");
         }
+
 
     }
 }

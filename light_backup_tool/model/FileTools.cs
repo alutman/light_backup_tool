@@ -21,7 +21,8 @@ namespace light_backup_tool.model
             {
                 if (ex is DirectoryNotFoundException ||
                     ex is FileNotFoundException ||
-                    ex is ArgumentException)
+                    ex is ArgumentException ||
+                    ex is NotSupportedException)
                 {
                     return false;
                 }

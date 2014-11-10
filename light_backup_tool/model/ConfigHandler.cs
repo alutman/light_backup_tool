@@ -126,6 +126,7 @@ namespace light_backup_tool.model
             Config c = configs[id];
             List<String> backupDirs = new List<String>();
             String[] dirs;
+            if(!FileTools.checkExists(c.destination)) return new String[0];
             try
             {
                 if (c.namedFolder)
