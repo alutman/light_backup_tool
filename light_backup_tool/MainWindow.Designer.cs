@@ -41,6 +41,7 @@
             this.configToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportCurrentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nameInput = new System.Windows.Forms.TextBox();
             this.descInput = new System.Windows.Forms.TextBox();
             this.nameLabel = new System.Windows.Forms.Label();
@@ -66,7 +67,7 @@
             this.lastBackupLabel = new System.Windows.Forms.LinkLabel();
             this.numBackupsText = new System.Windows.Forms.Label();
             this.lastBackupText = new System.Windows.Forms.Label();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.contextMenuStrip1.SuspendLayout();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
@@ -81,6 +82,7 @@
             this.configTreeView.TabIndex = 1;
             this.configTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.configTreeView_AfterSelect);
             this.configTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.configTreeView_NodeMouseClick);
+            this.configTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.configTreeView_KeyDown);
             // 
             // contextMenuStrip1
             // 
@@ -128,14 +130,14 @@
             // newConfigToolStripMenuItem1
             // 
             this.newConfigToolStripMenuItem1.Name = "newConfigToolStripMenuItem1";
-            this.newConfigToolStripMenuItem1.Size = new System.Drawing.Size(137, 22);
+            this.newConfigToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.newConfigToolStripMenuItem1.Text = "New Config";
             this.newConfigToolStripMenuItem1.Click += new System.EventHandler(this.addNewConfigToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -151,16 +153,23 @@
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
-            this.importToolStripMenuItem.Text = "Import Config";
-            this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.importToolStripMenuItem.Text = "Import Configs";
+            this.importToolStripMenuItem.Click += new System.EventHandler(this.importAllConfigsToolStripMenuItem_Click);
             // 
             // exportCurrentToolStripMenuItem
             // 
             this.exportCurrentToolStripMenuItem.Name = "exportCurrentToolStripMenuItem";
-            this.exportCurrentToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
-            this.exportCurrentToolStripMenuItem.Text = "Export Config";
-            this.exportCurrentToolStripMenuItem.Click += new System.EventHandler(this.exportCurrentToolStripMenuItem_Click);
+            this.exportCurrentToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.exportCurrentToolStripMenuItem.Text = "Export Configs";
+            this.exportCurrentToolStripMenuItem.Click += new System.EventHandler(this.exportAllConfigsToolStripMenuItem_Click);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // nameInput
             // 
@@ -375,13 +384,6 @@
             this.lastBackupText.TabIndex = 27;
             this.lastBackupText.Text = "none";
             // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
-            this.aboutToolStripMenuItem.Text = "About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -464,6 +466,7 @@
         private System.Windows.Forms.ToolStripMenuItem newConfigToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
     }
 }
 

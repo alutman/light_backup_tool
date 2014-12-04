@@ -12,6 +12,8 @@ using System.Windows.Forms;
 using Ionic.Utils;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Reflection;
+using System.Diagnostics;
 using light_backup_tool.model;
 
 namespace light_backup_tool
@@ -19,7 +21,9 @@ namespace light_backup_tool
     public partial class MainWindow : Form
     {
         private static readonly String TITLE = "Light Backup Tool";
-        private static readonly String VERSION = "0.2.0";
+        private static readonly String CONFIGS_FILENAME = "configs.xml";
+
+        private static readonly String VERSION = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
         private ConfigHandler configs;
 
         public MainWindow()
@@ -28,22 +32,30 @@ namespace light_backup_tool
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             setEditMode(false);
             this.CancelButton = discardButton;
-            configs = new ConfigHandler("configs.xml", new Controller(this));
-            importAll();
-        }
-
-        private void importAll()
-        {
+            configs = new ConfigHandler(prepareConfigFile(), new Controller(this));
             try
             {
                 configs.importAll();
             }
             catch (IOException)
             {
-                Console.WriteLine("Default configs.xml not found");
+                Console.WriteLine(CONFIGS_FILENAME + " not found");
                 return;
             }
+            loadAllConfigsIntoTree();
+        }
+        private String prepareConfigFile()
+        {
+            String configPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), TITLE);
+            try {
+                FileTools.makeDirSoft(configPath);
+            } catch (IOException) { Console.Write(configPath+" exists already");}
+            return Path.Combine(configPath, CONFIGS_FILENAME);
+        }
 
+        private void loadAllConfigsIntoTree()
+        {
+            configTreeView.Nodes.Clear();
             Config[] allImported = configs.allConfigs();
             for (int i = 0; i < allImported.Length; i++)
             {
@@ -346,38 +358,39 @@ namespace light_backup_tool
         }
 
 
-
-
-        private void exportCurrentToolStripMenuItem_Click(object sender, EventArgs e)
+        private void exportAllConfigsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             progressBar.Value = 0;
-            try
-            {
-                String fileName = configs.export(configTreeView.SelectedNode.Name);
-                showNotice("Config exported to "+fileName);
-            }
-            catch (NullReferenceException ex)
-            {
-                showError(ex.StackTrace);
-            }
 
+            saveFileDialog1.Filter = "XML (*.xml)|*.xml|All files(*.*)|*.*";
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                String fileName = saveFileDialog1.FileName;
+                configs.exportAll(fileName);
+                showNotice("Configs exported to "+fileName);
+            }
 
         }
 
-        private void importToolStripMenuItem_Click(object sender, EventArgs e)
+
+        private void importAllConfigsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             progressBar.Value = 0;
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                Config c = configs.import(openFileDialog1.FileName);
-                loadConfig(c);
-                addTreeNode(c);
-                configs.exportAll();
+                try
+                {
+                    configs.importAll(openFileDialog1.FileName);
+                    configs.exportAll();
+                }
+                catch (InvalidOperationException)
+                {
+                    showError("Not a valid config file");
+                }
+                loadAllConfigsIntoTree();
+                showNotice("Configs successfully imported");
             }            
-
         }
-
-
 
         private void discardButton_Click(object sender, EventArgs e)
         {
@@ -410,6 +423,19 @@ namespace light_backup_tool
 
         private void deleteConfigToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            deleteCurrentConfig();
+        }
+        private void configTreeView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                deleteCurrentConfig();
+            }
+        }
+
+
+        private void deleteCurrentConfig()
+        {
             try
             {
                 DialogResult result = MessageBox.Show("Do you wish to delete config " + configTreeView.SelectedNode.Text, "Delete Config", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
@@ -421,11 +447,10 @@ namespace light_backup_tool
             }
             catch (NullReferenceException)
             {
-                showError("Nothing to delete");
+                //showError("Nothing to delete");
+                Console.Write("No config selected to delete");
             }
-
         }
-
 
         private void sourceLabel_Click(object sender, EventArgs e)
         {
@@ -456,7 +481,15 @@ namespace light_backup_tool
             errorProvider1.SetError(destInput, "");
             if (FileTools.checkExists(destInput.Text))
             {
-                System.Diagnostics.Process.Start(destInput.Text);
+                String namedPath = Path.Combine(destInput.Text, nameInput.Text);
+                if (namedFolderCheckBox.Checked && FileTools.checkExists(namedPath))
+                {
+                    System.Diagnostics.Process.Start(namedPath);
+                }
+                else
+                {
+                    System.Diagnostics.Process.Start(destInput.Text);
+                }
             }
             else
             {
@@ -568,6 +601,8 @@ namespace light_backup_tool
         {
             errorProvider1.SetError((Control)sender, "");
         }
+
+
 
 
     }

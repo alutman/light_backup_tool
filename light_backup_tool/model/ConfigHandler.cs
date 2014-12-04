@@ -105,19 +105,36 @@ namespace light_backup_tool.model
 
         public void exportAll()
         {
-            ExportImportHandler.exportAll(allConfigs(), configFile);
+            exportAll(configFile);
+        }
+        public void exportAll(String fileName)
+        {
+            ExportImportHandler.exportAll(allConfigs(), fileName);
         }
 
         public void importAll()
         {
-            importToDict(ExportImportHandler.importAll(configFile));
+            importAll(configFile);
+        }
+
+        public void importAll(String fileName)
+        {
+            importToDict(ExportImportHandler.importAll(fileName));
         }
 
         private void importToDict(Config[] configArray)
         {
             for (int i = 0; i < configArray.Length; i++)
             {
-                configs.Add(configArray[i].id, configArray[i]);
+                try
+                {
+                    configs.Add(configArray[i].id, configArray[i]);
+                }
+                catch (ArgumentException)
+                {
+                    Console.Write("Skipped adding an already existing config");
+                }
+                
             }
 
         }
