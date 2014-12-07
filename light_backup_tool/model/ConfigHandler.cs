@@ -57,7 +57,7 @@ namespace light_backup_tool.model
                 if (sa.Length > 0)
                 {
                     String last = sa[sa.Length - 1];
-                    return last.Substring(last.LastIndexOf("\\") + 1);
+                    return Path.GetFileName(last);
                 }
                 else
                 {
@@ -148,7 +148,7 @@ namespace light_backup_tool.model
             {
                 if (c.namedFolder)
                 {
-                    dirs = Directory.GetDirectories(c.destination + "\\" + c.name);
+                    dirs = Directory.GetDirectories(Path.Combine(c.destination, c.name));
 
                 }
                 else

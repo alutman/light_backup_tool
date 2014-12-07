@@ -59,7 +59,7 @@ namespace light_backup_tool.model
         {
             Config c = config;
             String dateFolder = DateTime.Now.ToString(dateFormat);
-            String newPath = c.namedFolder ? c.destination + "\\" + c.name + "\\" + dateFolder : c.destination + "\\" + dateFolder;
+            String newPath = c.namedFolder ? Path.Combine(c.destination, c.name, dateFolder) : Path.Combine(c.destination, dateFolder);
             if (tag.Length > 0)
             {
                 newPath += "_" + tag;
@@ -70,11 +70,11 @@ namespace light_backup_tool.model
         private void backupFile(Config c, String tag)
         {
             String newPath = createNewPath();
-            String filename = c.source.Substring(c.source.LastIndexOf('\\') + 1);
+            String filename = Path.GetFileName(c.source);
             FileTools.makeDirSoft(newPath);
 
             controller.addToProgressBar(50);
-            File.Copy(c.source, newPath + "\\" + filename);
+            File.Copy(c.source, Path.Combine(newPath, filename));
             controller.setProgressBar(100);
             
         }
@@ -82,7 +82,7 @@ namespace light_backup_tool.model
         private void backupFolder(Config c, String tag)
         {
             String newPath = createNewPath();
-            newPath += c.source.Substring(c.source.LastIndexOf('\\'));
+            newPath += Path.GetFileName(c.source);
 
             FileTools.makeDirSoft(newPath);
 

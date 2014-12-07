@@ -92,7 +92,16 @@ namespace light_backup_tool
             namedFolderCheckBox.Enabled = on;
             tagInput.ReadOnly = on;
 
+            destInputResolved.Text = destInput.Text;
+
+            if (namedFolderCheckBox.Checked)
+            {
+                destInputResolved.Text = Path.Combine(destInput.Text, nameInput.Text);
+            }
+
             destInput.ReadOnly = !on; //|| useDefaultCheckBox.Checked;
+            destInput.Visible = on;
+            destInputResolved.Visible = !on;
 
             discardButton.Visible = on;
             sourceOpenButton.Visible = on;
@@ -167,6 +176,7 @@ namespace light_backup_tool
             errorProvider1.SetError(nameInput, "");
             errorProvider1.SetError(sourceInput, "");
             errorProvider1.SetError(destInput, "");
+            errorProvider1.SetError(destInputResolved, "");
             errorProvider1.SetError(lastBackupText, "");
         }
 
@@ -456,7 +466,6 @@ namespace light_backup_tool
         {
             errorProvider1.SetError(sourceInput, "");
             int x = sourceInput.Text.LastIndexOf("\\");
-
             if (x < 0)
             {
                 errorProvider1.SetError(sourceInput, "Not a valid path");
@@ -479,20 +488,15 @@ namespace light_backup_tool
         private void destLabel_Click(object sender, EventArgs e)
         {
             errorProvider1.SetError(destInput, "");
-            if (FileTools.checkExists(destInput.Text))
+            errorProvider1.SetError(destInputResolved, "");
+            String path = nameInput.ReadOnly ? destInputResolved.Text : destInput.Text;
+            if (FileTools.checkExists(path))
             {
-                String namedPath = Path.Combine(destInput.Text, nameInput.Text);
-                if (namedFolderCheckBox.Checked && FileTools.checkExists(namedPath))
-                {
-                    System.Diagnostics.Process.Start(namedPath);
-                }
-                else
-                {
-                    System.Diagnostics.Process.Start(destInput.Text);
-                }
+                System.Diagnostics.Process.Start(path);
             }
             else
             {
+                errorProvider1.SetError(destInputResolved, "Path does not exist");
                 errorProvider1.SetError(destInput, "Path does not exist");
             }
 
@@ -505,11 +509,11 @@ namespace light_backup_tool
             String source = "";
             if (namedFolderCheckBox.Checked)
             {
-                source = destInput.Text + "\\" + nameInput.Text + "\\" + lastBackupText.Text;
+                source = Path.Combine(destInput.Text, nameInput.Text, lastBackupText.Text);
             }
             else
             {
-                source = destInput.Text + "\\" + lastBackupText.Text;
+                source = Path.Combine(destInput.Text, lastBackupText.Text);
             }
             if (FileTools.checkExists(source))
             {

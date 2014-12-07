@@ -68,6 +68,7 @@
             this.numBackupsText = new System.Windows.Forms.Label();
             this.lastBackupText = new System.Windows.Forms.Label();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.destInputResolved = new System.Windows.Forms.TextBox();
             this.contextMenuStrip1.SuspendLayout();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
@@ -130,14 +131,14 @@
             // newConfigToolStripMenuItem1
             // 
             this.newConfigToolStripMenuItem1.Name = "newConfigToolStripMenuItem1";
-            this.newConfigToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.newConfigToolStripMenuItem1.Size = new System.Drawing.Size(137, 22);
             this.newConfigToolStripMenuItem1.Text = "New Config";
             this.newConfigToolStripMenuItem1.Click += new System.EventHandler(this.addNewConfigToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -384,6 +385,14 @@
             this.lastBackupText.TabIndex = 27;
             this.lastBackupText.Text = "none";
             // 
+            // destInputResolved
+            // 
+            this.destInputResolved.Location = new System.Drawing.Point(311, 295);
+            this.destInputResolved.Name = "destInputResolved";
+            this.destInputResolved.ReadOnly = true;
+            this.destInputResolved.Size = new System.Drawing.Size(352, 20);
+            this.destInputResolved.TabIndex = 28;
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -391,6 +400,7 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.CausesValidation = false;
             this.ClientSize = new System.Drawing.Size(775, 455);
+            this.Controls.Add(this.destInputResolved);
             this.Controls.Add(this.lastBackupText);
             this.Controls.Add(this.numBackupsText);
             this.Controls.Add(this.lastBackupLabel);
@@ -467,6 +477,7 @@
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.TextBox destInputResolved;
     }
 }
 
