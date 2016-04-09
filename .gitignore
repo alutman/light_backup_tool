@@ -1,2 +1,3 @@
 light_backup_tool/bin
 light_backup_tool/obj
+*.suo

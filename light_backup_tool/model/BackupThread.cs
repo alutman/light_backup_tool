@@ -82,7 +82,7 @@ namespace light_backup_tool.model
         private void backupFolder(Config c, String tag)
         {
             String newPath = createNewPath();
-            newPath += Path.GetFileName(c.source);
+            newPath = Path.Combine(newPath, Path.GetFileName(c.source));
 
             FileTools.makeDirSoft(newPath);
 
