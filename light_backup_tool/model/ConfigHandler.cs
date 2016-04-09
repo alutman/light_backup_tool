@@ -13,7 +13,7 @@ namespace light_backup_tool.model
     {
         private Dictionary<String, Config> configs = new Dictionary<String, Config>();
         private readonly String dateFormat = "yyyy-MM-dd_HH-mm";
-        private readonly String dateRegex = "\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])_(0[0-9]|1[0-9]|2[0-3])-([0-5][0-9]).*";
+        private static readonly String dateRegex = "\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])_(0[0-9]|1[0-9]|2[0-3])-([0-5][0-9]).*";
         private String configFile;
         private Controller controller;
         private Thread currentThread;
@@ -196,10 +196,14 @@ namespace light_backup_tool.model
         {
             return getBackupDirs(id, false);
         }
-
         public String[] getBackupDirs(String id, Boolean nameOnly)
-        {
+        {            
             Config c = configs[id];
+            return ConfigHandler.getBackupDirsForConfig(c, nameOnly);
+
+        }
+        public static String[] getBackupDirsForConfig(Config c, Boolean nameOnly)
+        {
             List<String> backupDirs = new List<String>();
             String[] dirs;
             if(!FileTools.checkExists(c.destination)) return new String[0];

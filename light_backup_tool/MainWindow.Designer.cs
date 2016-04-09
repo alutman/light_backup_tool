@@ -63,6 +63,7 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.restoreBackupButton = new System.Windows.Forms.Button();
             this.deleteBackupButton = new System.Windows.Forms.Button();
+            this.backupLimitLabel = new System.Windows.Forms.Label();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.numBackupsLablel = new System.Windows.Forms.Label();
@@ -72,9 +73,11 @@
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.destInputResolved = new System.Windows.Forms.TextBox();
             this.backupListBox = new System.Windows.Forms.ListBox();
+            this.backupLimitInput = new System.Windows.Forms.NumericUpDown();
             this.contextMenuStrip1.SuspendLayout();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.backupLimitInput)).BeginInit();
             this.SuspendLayout();
             // 
             // configTreeView
@@ -379,6 +382,17 @@
             this.deleteBackupButton.UseVisualStyleBackColor = true;
             this.deleteBackupButton.Click += new System.EventHandler(this.deleteBackupButton_Click);
             // 
+            // backupLimitLabel
+            // 
+            this.backupLimitLabel.AutoSize = true;
+            this.backupLimitLabel.Location = new System.Drawing.Point(733, 269);
+            this.backupLimitLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.backupLimitLabel.Name = "backupLimitLabel";
+            this.backupLimitLabel.Size = new System.Drawing.Size(57, 25);
+            this.backupLimitLabel.TabIndex = 33;
+            this.backupLimitLabel.Text = "Limit";
+            this.toolTip1.SetToolTip(this.backupLimitLabel, "Maximum number of backups to keep. 0 for no limit");
+            // 
             // progressBar
             // 
             this.progressBar.Location = new System.Drawing.Point(622, 808);
@@ -454,6 +468,13 @@
             this.backupListBox.SelectedValueChanged += new System.EventHandler(this.backupListBox_SelectedValueChanged);
             this.backupListBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.backupListBox_MouseDoubleClick);
             // 
+            // backupLimitInput
+            // 
+            this.backupLimitInput.Location = new System.Drawing.Point(809, 267);
+            this.backupLimitInput.Name = "backupLimitInput";
+            this.backupLimitInput.Size = new System.Drawing.Size(108, 31);
+            this.backupLimitInput.TabIndex = 32;
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
@@ -462,6 +483,8 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.CausesValidation = false;
             this.ClientSize = new System.Drawing.Size(1550, 875);
+            this.Controls.Add(this.backupLimitLabel);
+            this.Controls.Add(this.backupLimitInput);
             this.Controls.Add(this.deleteBackupButton);
             this.Controls.Add(this.backupListBox);
             this.Controls.Add(this.restoreBackupButton);
@@ -498,6 +521,7 @@
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.backupLimitInput)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -547,6 +571,8 @@
         private System.Windows.Forms.Button restoreBackupButton;
         private System.Windows.Forms.ListBox backupListBox;
         private System.Windows.Forms.Button deleteBackupButton;
+        private System.Windows.Forms.Label backupLimitLabel;
+        private System.Windows.Forms.NumericUpDown backupLimitInput;
     }
 }
 

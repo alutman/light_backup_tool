@@ -92,6 +92,8 @@ namespace light_backup_tool
             namedFolderCheckBox.Enabled = on;
             tagInput.ReadOnly = on;
 
+            backupLimitInput.Enabled = on;
+
             destInputResolved.Text = destInput.Text;
 
             if (namedFolderCheckBox.Checked)
@@ -146,6 +148,7 @@ namespace light_backup_tool
                 lastBackupText.Text = "none";
                 backupListBox.DataSource = null;
                 numBackupsText.Text = "0";
+                backupLimitInput.Value = 0;
                 namedFolderCheckBox.Checked = true;
                 tagInput.Text = "";
                 configTreeView.SelectedNode = null;
@@ -161,6 +164,7 @@ namespace light_backup_tool
                 numBackupsText.Text = ""+configs.countPastBackups(c.id);
                 lastBackupText.Text = configs.getLastBackup(c.id);
                 backupListBox.DataSource = configs.getBackupDirs(c.id, true).Reverse().ToArray();
+                backupLimitInput.Value = (decimal)c.backupLimit;
                 tagInput.Text = "";
                 try
                 {
@@ -268,12 +272,13 @@ namespace light_backup_tool
                     selectedConfig.source = sourceInput.Text;
                     selectedConfig.destination = destInput.Text;
                     selectedConfig.namedFolder = namedFolderCheckBox.Checked;
+                    selectedConfig.backupLimit = Decimal.ToInt32(backupLimitInput.Value);
                     configs.put(selectedConfig);
                     addTreeNode(selectedConfig);
                 }
                 else
                 {
-                    Config c = new Config(nameInput.Text, descInput.Text, sourceInput.Text, destInput.Text, namedFolderCheckBox.Checked);
+                    Config c = new Config(nameInput.Text, descInput.Text, sourceInput.Text, destInput.Text, namedFolderCheckBox.Checked, Decimal.ToInt32(backupLimitInput.Value));
                     configs.put(c);
                     addTreeNode(c);
                 }

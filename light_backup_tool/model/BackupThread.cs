@@ -126,6 +126,20 @@ namespace light_backup_tool.model
                 {
                     backupFile(config, tag);
                 }
+                if (config.backupLimit > 0)
+                {
+                    String[] sa = ConfigHandler.getBackupDirsForConfig(config, false);
+                    if (sa.Length > config.backupLimit)
+                    {
+                        int newSize = sa.Length - config.backupLimit;
+                        String[] saNew = new String[newSize];
+                        
+                        Array.Copy(sa, 0, saNew, 0, newSize);
+                        this.delete(saNew.ToList());
+
+                    }
+      
+                }
             }
             catch (Exception ex)
             {
