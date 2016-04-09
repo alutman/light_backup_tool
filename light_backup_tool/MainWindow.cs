@@ -110,10 +110,19 @@ namespace light_backup_tool
 
             performBackupButton.Enabled = !on;
 
+            Boolean backupControlsEnabled = (!on && lastBackupText.Text != "none");
+            restoreBackupButton.Enabled = backupControlsEnabled;
+            deleteBackupButton.Enabled = backupControlsEnabled;
+            backupListBox.Enabled = backupControlsEnabled;
+
+  
             if (configTreeView.SelectedNode == null)
             {
                 performBackupButton.Enabled = false;
+                restoreBackupButton.Enabled = false;
             }
+
+
 
             if (on) modifyConfigButton.Text = "Save";
             else modifyConfigButton.Text = "Edit";
@@ -135,6 +144,7 @@ namespace light_backup_tool
                 sourceInput.Text = "";
                 destInput.Text = "";
                 lastBackupText.Text = "none";
+                backupListBox.DataSource = null;
                 numBackupsText.Text = "0";
                 namedFolderCheckBox.Checked = true;
                 tagInput.Text = "";
@@ -150,6 +160,7 @@ namespace light_backup_tool
                 namedFolderCheckBox.Checked = c.namedFolder;
                 numBackupsText.Text = ""+configs.countPastBackups(c.id);
                 lastBackupText.Text = configs.getLastBackup(c.id);
+                backupListBox.DataSource = configs.getBackupDirs(c.id, true).Reverse().ToArray();
                 tagInput.Text = "";
                 try
                 {
@@ -191,13 +202,11 @@ namespace light_backup_tool
             else
             {
                 progressBar.Value = Math.Min(Math.Abs(value), 100);
-                if (progressBar.Value == 100)
+                if (progressBar.Value == 100 || progressBar.Value == 0)
                 {
+                    restoreMode(false);
                     backupMode(false);
-                }
-                if (progressBar.Value == 0)
-                {
-                    backupMode(false);
+                    deleteMode(false);
                 }
             }
 
@@ -319,6 +328,45 @@ namespace light_backup_tool
                 performBackupButton.Text = "Backup";
             }
             
+        }
+
+        private void restoreMode(Boolean b)
+        {
+            menuStrip.Enabled = !b;
+            modifyConfigButton.Enabled = !b;
+            tagInput.Enabled = !b;
+            configTreeView.Enabled = !b;
+            performBackupButton.Enabled = !b;
+            if (b)
+            {
+                restoreBackupButton.Text = "Cancel";
+            }
+            else
+            {
+                reloadConfig();
+                restoreBackupButton.Text = "Restore";
+            }
+
+        }
+
+        private void deleteMode(Boolean b)
+        {
+            menuStrip.Enabled = !b;
+            modifyConfigButton.Enabled = !b;
+            tagInput.Enabled = !b;
+            configTreeView.Enabled = !b;
+            performBackupButton.Enabled = !b;
+            restoreBackupButton.Enabled = !b;
+            if (b)
+            {
+                deleteBackupButton.Text = "Cancel";
+            }
+            else
+            {
+                reloadConfig();
+                deleteBackupButton.Text = "Delete";
+            }
+
         }
 
         private void performBackupButton_Click(object sender, EventArgs e)
@@ -525,10 +573,72 @@ namespace light_backup_tool
             }
         }
 
+        private void backupListBox_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            String source = "";
+            String selectedItem = backupListBox.SelectedItem.ToString();
+            if (namedFolderCheckBox.Checked)
+            {
+                source = Path.Combine(destInput.Text, nameInput.Text, selectedItem);
+            }
+            else
+            {
+                source = Path.Combine(destInput.Text, selectedItem);
+            }
+            if (FileTools.checkExists(source))
+            {
+                System.Diagnostics.Process.Start(source);
+            }
+        }
+
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show(MainWindow.TITLE+"\nVersion v"+MainWindow.VERSION, "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void restoreBackupButton_Click(object sender, EventArgs e)
+        {
+            if (restoreBackupButton.Text == "Restore")
+            {
+                restoreMode(true);
+                progressBar.Value = 0;
+                try
+                {
+                    configs.restore(configTreeView.SelectedNode.Name, backupListBox.SelectedItem.ToString());
+                }
+                catch (Exception ex)
+                {
+                    showError(ex.Message);
+                }
+            }
+            else if (restoreBackupButton.Text == "Cancel")
+            {
+                configs.stop();
+                restoreMode(false);
+            }
+        }
+
+        private void deleteBackupButton_Click(object sender, EventArgs e)
+        {
+            if (deleteBackupButton.Text == "Delete")
+            {
+                deleteMode(true);
+                progressBar.Value = 0;
+                try
+                {
+                    configs.delete(configTreeView.SelectedNode.Name, backupListBox.SelectedItem.ToString());
+                }
+                catch (Exception ex)
+                {
+                    showError(ex.Message);
+                }
+            }
+            else if (deleteBackupButton.Text == "Cancel")
+            {
+                configs.stop();
+                deleteMode(false);
+            }
         }
 
         /* END CLICK HANDLERS */
@@ -605,6 +715,14 @@ namespace light_backup_tool
         {
             errorProvider1.SetError((Control)sender, "");
         }
+
+
+
+
+
+
+
+
 
 
 

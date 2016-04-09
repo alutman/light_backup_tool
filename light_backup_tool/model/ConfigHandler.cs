@@ -49,7 +49,7 @@ namespace light_backup_tool.model
             return getBackupDirs(id).Length;
         }
 
-        public String getLastBackup(String id)
+        public String getLastBackupFull(String id)
         {
             try
             {
@@ -57,17 +57,53 @@ namespace light_backup_tool.model
                 if (sa.Length > 0)
                 {
                     String last = sa[sa.Length - 1];
-                    return Path.GetFileName(last);
+                    return last;
                 }
                 else
                 {
-                    return "none";
+                    return null;
                 }
             }
             catch (DirectoryNotFoundException)
             {
-                return "none";
+                return null;
             }
+        }
+
+
+        public String getLastBackup(String id)
+        {
+            String full = getLastBackupFull(id);
+            return full == null ? "none" : Path.GetFileName(full);       
+        }
+
+        public void restore(String id, String backupFolder)
+        {
+            Config c = configs[id];
+            String backupPath = Path.Combine(c.destination, c.namedFolder ? c.name : "", backupFolder);
+            BackupThread backupThread = new BackupThread(c, "", dateFormat, controller);
+            currentThread = new Thread(() => backupThread.restore(backupPath));
+            currentThread.Start();
+
+        }
+
+        public void delete(String id, String backupFolder)
+        {
+            Config c = configs[id];
+            String deletePath = Path.Combine(c.destination, c.namedFolder ? c.name : "", backupFolder);
+            BackupThread backupThread = new BackupThread(c, "", dateFormat, controller);
+            currentThread = new Thread(() => backupThread.delete(deletePath));
+            currentThread.Start();
+
+        }
+
+        public void restoreLast(String id)
+        {
+            String lastBackup = getLastBackupFull(id);
+            BackupThread backupThread = new BackupThread(configs[id], "", dateFormat, controller);
+            currentThread = new Thread(() => backupThread.restore(lastBackup));
+            currentThread.Start();
+
         }
         public void backup(String id, String tag)
         {
@@ -138,7 +174,13 @@ namespace light_backup_tool.model
             }
 
         }
-        private String[] getBackupDirs(String id)
+
+        public String[] getBackupDirs(String id)
+        {
+            return getBackupDirs(id, false);
+        }
+
+        public String[] getBackupDirs(String id, Boolean nameOnly)
         {
             Config c = configs[id];
             List<String> backupDirs = new List<String>();
@@ -167,7 +209,14 @@ namespace light_backup_tool.model
                 Match m = r.Match(s);
                 if (m.Success)
                 {
-                    backupDirs.Add(s);
+                    if (nameOnly)
+                    {
+                        backupDirs.Add(new DirectoryInfo(s).Name);
+                    }
+                    else
+                    {
+                        backupDirs.Add(s);
+                    }
                 }
             }
             return backupDirs.ToArray();
