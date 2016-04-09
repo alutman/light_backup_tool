@@ -576,6 +576,7 @@ namespace light_backup_tool
         private void backupListBox_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             String source = "";
+            if (backupListBox.SelectedItems.Count > 1) return;
             String selectedItem = backupListBox.SelectedItem.ToString();
             if (namedFolderCheckBox.Checked)
             {
@@ -595,6 +596,12 @@ namespace light_backup_tool
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show(MainWindow.TITLE+"\nVersion v"+MainWindow.VERSION, "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void backupListBox_SelectedValueChanged(object sender, EventArgs e)
+        {
+            Boolean enabled = backupListBox.SelectedItems.Count <= 1;
+            restoreBackupButton.Enabled = enabled;
         }
 
         private void restoreBackupButton_Click(object sender, EventArgs e)
@@ -627,7 +634,7 @@ namespace light_backup_tool
                 progressBar.Value = 0;
                 try
                 {
-                    configs.delete(configTreeView.SelectedNode.Name, backupListBox.SelectedItem.ToString());
+                    configs.delete(configTreeView.SelectedNode.Name, backupListBox.SelectedItems);
                 }
                 catch (Exception ex)
                 {

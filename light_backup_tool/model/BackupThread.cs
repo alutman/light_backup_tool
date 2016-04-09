@@ -24,6 +24,35 @@ namespace light_backup_tool.model
             this.controller = controller;
         }
 
+        public void delete(IList<String> deletePaths)
+        {
+            double deletePart = 100d / (double)deletePaths.Count;
+
+            try
+            {
+                foreach (String s in deletePaths)
+                {
+                    Directory.Delete(s, true);
+                    controller.addToProgressBar((int)deletePart);        
+                }
+                controller.setProgressBar(100);
+            }
+            catch (Exception ex)
+            {
+                if (ex is ThreadAbortException)
+                {
+                    controller.sendError("Delete may have partially completed");
+                }
+                else
+                {
+                    controller.sendError(ex.Message);
+                }
+                controller.setProgressBar(0);
+
+            }
+
+        }
+
 
         public void delete(String deletePath)
         {

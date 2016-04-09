@@ -87,7 +87,7 @@ namespace light_backup_tool.model
 
         }
 
-        public void delete(String id, String backupFolder)
+        public void deleteSingle(String id, String backupFolder)
         {
             Config c = configs[id];
             String deletePath = Path.Combine(c.destination, c.namedFolder ? c.name : "", backupFolder);
@@ -95,6 +95,23 @@ namespace light_backup_tool.model
             currentThread = new Thread(() => backupThread.delete(deletePath));
             currentThread.Start();
 
+        }
+
+         //IList, ICollection, IEnumerable
+        public void delete(String id, System.Collections.IList backupFolders)
+        {
+            Config c = configs[id];
+
+            List<String> deletePaths = new List<String>();
+
+            foreach (String s in backupFolders)
+            {
+                deletePaths.Add(Path.Combine(c.destination, c.namedFolder ? c.name : "", s));
+
+            }
+            BackupThread backupThread = new BackupThread(c, "", dateFormat, controller);
+            currentThread = new Thread(() => backupThread.delete(deletePaths));
+            currentThread.Start();
         }
 
         public void restoreLast(String id)

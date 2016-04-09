@@ -448,8 +448,10 @@
             this.backupListBox.ItemHeight = 25;
             this.backupListBox.Location = new System.Drawing.Point(953, 263);
             this.backupListBox.Name = "backupListBox";
+            this.backupListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.backupListBox.Size = new System.Drawing.Size(368, 129);
             this.backupListBox.TabIndex = 30;
+            this.backupListBox.SelectedValueChanged += new System.EventHandler(this.backupListBox_SelectedValueChanged);
             this.backupListBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.backupListBox_MouseDoubleClick);
             // 
             // MainWindow
