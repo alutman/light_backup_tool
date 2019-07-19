@@ -64,6 +64,7 @@
             this.restoreBackupButton = new System.Windows.Forms.Button();
             this.deleteBackupButton = new System.Windows.Forms.Button();
             this.backupLimitLabel = new System.Windows.Forms.Label();
+            this.compressCheckBox = new System.Windows.Forms.CheckBox();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.numBackupsLablel = new System.Windows.Forms.Label();
@@ -83,10 +84,9 @@
             // configTreeView
             // 
             this.configTreeView.ContextMenuStrip = this.contextMenuStrip1;
-            this.configTreeView.Location = new System.Drawing.Point(24, 52);
-            this.configTreeView.Margin = new System.Windows.Forms.Padding(6);
+            this.configTreeView.Location = new System.Drawing.Point(12, 27);
             this.configTreeView.Name = "configTreeView";
-            this.configTreeView.Size = new System.Drawing.Size(444, 800);
+            this.configTreeView.Size = new System.Drawing.Size(224, 418);
             this.configTreeView.TabIndex = 1;
             this.configTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.configTreeView_AfterSelect);
             this.configTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.configTreeView_NodeMouseClick);
@@ -98,19 +98,19 @@
             this.backupToolStripMenuItem,
             this.deleteToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(161, 76);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(108, 48);
             // 
             // backupToolStripMenuItem
             // 
             this.backupToolStripMenuItem.Name = "backupToolStripMenuItem";
-            this.backupToolStripMenuItem.Size = new System.Drawing.Size(160, 36);
+            this.backupToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.backupToolStripMenuItem.Text = "New";
             this.backupToolStripMenuItem.Click += new System.EventHandler(this.addNewConfigToolStripMenuItem_Click);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(160, 36);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteConfigToolStripMenuItem_Click);
             // 
@@ -122,8 +122,7 @@
             this.aboutToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Padding = new System.Windows.Forms.Padding(12, 4, 0, 4);
-            this.menuStrip.Size = new System.Drawing.Size(1550, 44);
+            this.menuStrip.Size = new System.Drawing.Size(775, 24);
             this.menuStrip.TabIndex = 4;
             this.menuStrip.Text = "menuStrip1";
             // 
@@ -133,20 +132,20 @@
             this.newConfigToolStripMenuItem1,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(64, 36);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // newConfigToolStripMenuItem1
             // 
             this.newConfigToolStripMenuItem1.Name = "newConfigToolStripMenuItem1";
-            this.newConfigToolStripMenuItem1.Size = new System.Drawing.Size(216, 36);
+            this.newConfigToolStripMenuItem1.Size = new System.Drawing.Size(137, 22);
             this.newConfigToolStripMenuItem1.Text = "New Config";
             this.newConfigToolStripMenuItem1.Click += new System.EventHandler(this.addNewConfigToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(216, 36);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -156,77 +155,72 @@
             this.importToolStripMenuItem,
             this.exportCurrentToolStripMenuItem});
             this.configToolStripMenuItem.Name = "configToolStripMenuItem";
-            this.configToolStripMenuItem.Size = new System.Drawing.Size(98, 36);
+            this.configToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
             this.configToolStripMenuItem.Text = "Config";
             // 
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(249, 36);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
             this.importToolStripMenuItem.Text = "Import Configs";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.importAllConfigsToolStripMenuItem_Click);
             // 
             // exportCurrentToolStripMenuItem
             // 
             this.exportCurrentToolStripMenuItem.Name = "exportCurrentToolStripMenuItem";
-            this.exportCurrentToolStripMenuItem.Size = new System.Drawing.Size(249, 36);
+            this.exportCurrentToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
             this.exportCurrentToolStripMenuItem.Text = "Export Configs";
             this.exportCurrentToolStripMenuItem.Click += new System.EventHandler(this.exportAllConfigsToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(92, 36);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // nameInput
             // 
-            this.nameInput.Location = new System.Drawing.Point(622, 77);
-            this.nameInput.Margin = new System.Windows.Forms.Padding(6);
+            this.nameInput.Location = new System.Drawing.Point(311, 40);
             this.nameInput.Name = "nameInput";
-            this.nameInput.Size = new System.Drawing.Size(394, 31);
+            this.nameInput.Size = new System.Drawing.Size(199, 20);
             this.nameInput.TabIndex = 5;
             this.nameInput.Validating += new System.ComponentModel.CancelEventHandler(this.nameInput_Validating);
             this.nameInput.Validated += new System.EventHandler(this.InputValidated);
             // 
             // descInput
             // 
-            this.descInput.Location = new System.Drawing.Point(622, 125);
-            this.descInput.Margin = new System.Windows.Forms.Padding(6);
+            this.descInput.Location = new System.Drawing.Point(311, 65);
             this.descInput.Multiline = true;
             this.descInput.Name = "descInput";
-            this.descInput.Size = new System.Drawing.Size(896, 104);
+            this.descInput.Size = new System.Drawing.Size(450, 56);
             this.descInput.TabIndex = 6;
             // 
             // nameLabel
             // 
             this.nameLabel.AutoSize = true;
             this.nameLabel.BackColor = System.Drawing.Color.Transparent;
-            this.nameLabel.Location = new System.Drawing.Point(484, 83);
-            this.nameLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.nameLabel.Location = new System.Drawing.Point(242, 43);
             this.nameLabel.Name = "nameLabel";
-            this.nameLabel.Size = new System.Drawing.Size(68, 25);
+            this.nameLabel.Size = new System.Drawing.Size(35, 13);
             this.nameLabel.TabIndex = 7;
             this.nameLabel.Text = "Name";
             // 
             // descLabel
             // 
             this.descLabel.AutoSize = true;
-            this.descLabel.Location = new System.Drawing.Point(484, 131);
-            this.descLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.descLabel.Location = new System.Drawing.Point(242, 68);
             this.descLabel.Name = "descLabel";
-            this.descLabel.Size = new System.Drawing.Size(120, 25);
+            this.descLabel.Size = new System.Drawing.Size(60, 13);
             this.descLabel.TabIndex = 8;
             this.descLabel.Text = "Description";
             // 
             // sourceLabel
             // 
             this.sourceLabel.AutoSize = true;
-            this.sourceLabel.Location = new System.Drawing.Point(490, 427);
-            this.sourceLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.sourceLabel.Location = new System.Drawing.Point(245, 222);
             this.sourceLabel.Name = "sourceLabel";
-            this.sourceLabel.Size = new System.Drawing.Size(80, 25);
+            this.sourceLabel.Size = new System.Drawing.Size(41, 13);
             this.sourceLabel.TabIndex = 9;
             this.sourceLabel.TabStop = true;
             this.sourceLabel.Text = "Source";
@@ -235,10 +229,9 @@
             // destLabel
             // 
             this.destLabel.AutoSize = true;
-            this.destLabel.Location = new System.Drawing.Point(490, 567);
-            this.destLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.destLabel.Location = new System.Drawing.Point(245, 295);
             this.destLabel.Name = "destLabel";
-            this.destLabel.Size = new System.Drawing.Size(120, 25);
+            this.destLabel.Size = new System.Drawing.Size(60, 13);
             this.destLabel.TabIndex = 10;
             this.destLabel.TabStop = true;
             this.destLabel.Text = "Destination";
@@ -246,30 +239,27 @@
             // 
             // sourceInput
             // 
-            this.sourceInput.Location = new System.Drawing.Point(622, 427);
-            this.sourceInput.Margin = new System.Windows.Forms.Padding(6);
+            this.sourceInput.Location = new System.Drawing.Point(311, 222);
             this.sourceInput.Name = "sourceInput";
-            this.sourceInput.Size = new System.Drawing.Size(700, 31);
+            this.sourceInput.Size = new System.Drawing.Size(352, 20);
             this.sourceInput.TabIndex = 11;
             this.sourceInput.Validating += new System.ComponentModel.CancelEventHandler(this.sourceInput_Validating);
             this.sourceInput.Validated += new System.EventHandler(this.InputValidated);
             // 
             // destInput
             // 
-            this.destInput.Location = new System.Drawing.Point(622, 567);
-            this.destInput.Margin = new System.Windows.Forms.Padding(6);
+            this.destInput.Location = new System.Drawing.Point(311, 295);
             this.destInput.Name = "destInput";
-            this.destInput.Size = new System.Drawing.Size(700, 31);
+            this.destInput.Size = new System.Drawing.Size(352, 20);
             this.destInput.TabIndex = 12;
             this.destInput.Validating += new System.ComponentModel.CancelEventHandler(this.destInput_Validating);
             this.destInput.Validated += new System.EventHandler(this.InputValidated);
             // 
             // modifyConfigButton
             // 
-            this.modifyConfigButton.Location = new System.Drawing.Point(1372, 69);
-            this.modifyConfigButton.Margin = new System.Windows.Forms.Padding(6);
+            this.modifyConfigButton.Location = new System.Drawing.Point(686, 36);
             this.modifyConfigButton.Name = "modifyConfigButton";
-            this.modifyConfigButton.Size = new System.Drawing.Size(150, 44);
+            this.modifyConfigButton.Size = new System.Drawing.Size(75, 23);
             this.modifyConfigButton.TabIndex = 14;
             this.modifyConfigButton.Text = "Save";
             this.modifyConfigButton.UseVisualStyleBackColor = true;
@@ -277,20 +267,18 @@
             // 
             // tagInput
             // 
-            this.tagInput.Location = new System.Drawing.Point(1108, 752);
-            this.tagInput.Margin = new System.Windows.Forms.Padding(6);
+            this.tagInput.Location = new System.Drawing.Point(554, 391);
             this.tagInput.Name = "tagInput";
-            this.tagInput.Size = new System.Drawing.Size(214, 31);
+            this.tagInput.Size = new System.Drawing.Size(109, 20);
             this.tagInput.TabIndex = 15;
             this.tagInput.Validating += new System.ComponentModel.CancelEventHandler(this.tagInput_Validating);
             this.tagInput.Validated += new System.EventHandler(this.InputValidated);
             // 
             // performBackupButton
             // 
-            this.performBackupButton.Location = new System.Drawing.Point(1362, 752);
-            this.performBackupButton.Margin = new System.Windows.Forms.Padding(6);
+            this.performBackupButton.Location = new System.Drawing.Point(681, 391);
             this.performBackupButton.Name = "performBackupButton";
-            this.performBackupButton.Size = new System.Drawing.Size(150, 44);
+            this.performBackupButton.Size = new System.Drawing.Size(75, 23);
             this.performBackupButton.TabIndex = 16;
             this.performBackupButton.Text = "Backup";
             this.performBackupButton.UseVisualStyleBackColor = true;
@@ -298,10 +286,9 @@
             // 
             // sourceOpenButton
             // 
-            this.sourceOpenButton.Location = new System.Drawing.Point(1362, 423);
-            this.sourceOpenButton.Margin = new System.Windows.Forms.Padding(6);
+            this.sourceOpenButton.Location = new System.Drawing.Point(681, 220);
             this.sourceOpenButton.Name = "sourceOpenButton";
-            this.sourceOpenButton.Size = new System.Drawing.Size(150, 44);
+            this.sourceOpenButton.Size = new System.Drawing.Size(75, 23);
             this.sourceOpenButton.TabIndex = 18;
             this.sourceOpenButton.Text = "Open";
             this.sourceOpenButton.UseVisualStyleBackColor = true;
@@ -309,10 +296,9 @@
             // 
             // destOpenButton
             // 
-            this.destOpenButton.Location = new System.Drawing.Point(1362, 560);
-            this.destOpenButton.Margin = new System.Windows.Forms.Padding(6);
+            this.destOpenButton.Location = new System.Drawing.Point(681, 291);
             this.destOpenButton.Name = "destOpenButton";
-            this.destOpenButton.Size = new System.Drawing.Size(150, 44);
+            this.destOpenButton.Size = new System.Drawing.Size(75, 23);
             this.destOpenButton.TabIndex = 19;
             this.destOpenButton.Text = "Open";
             this.destOpenButton.UseVisualStyleBackColor = true;
@@ -321,10 +307,9 @@
             // appendTagLabel
             // 
             this.appendTagLabel.AutoSize = true;
-            this.appendTagLabel.Location = new System.Drawing.Point(964, 762);
-            this.appendTagLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.appendTagLabel.Location = new System.Drawing.Point(482, 396);
             this.appendTagLabel.Name = "appendTagLabel";
-            this.appendTagLabel.Size = new System.Drawing.Size(129, 25);
+            this.appendTagLabel.Size = new System.Drawing.Size(66, 13);
             this.appendTagLabel.TabIndex = 20;
             this.appendTagLabel.Text = "Append Tag";
             this.toolTip1.SetToolTip(this.appendTagLabel, "Optional tag for this backup");
@@ -336,10 +321,9 @@
             // discardButton
             // 
             this.discardButton.CausesValidation = false;
-            this.discardButton.Location = new System.Drawing.Point(1210, 69);
-            this.discardButton.Margin = new System.Windows.Forms.Padding(6);
+            this.discardButton.Location = new System.Drawing.Point(605, 36);
             this.discardButton.Name = "discardButton";
-            this.discardButton.Size = new System.Drawing.Size(150, 44);
+            this.discardButton.Size = new System.Drawing.Size(75, 23);
             this.discardButton.TabIndex = 22;
             this.discardButton.Text = "Discard";
             this.toolTip1.SetToolTip(this.discardButton, "Discard changes");
@@ -351,10 +335,9 @@
             this.namedFolderCheckBox.AutoSize = true;
             this.namedFolderCheckBox.Checked = true;
             this.namedFolderCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.namedFolderCheckBox.Location = new System.Drawing.Point(1362, 615);
-            this.namedFolderCheckBox.Margin = new System.Windows.Forms.Padding(6);
+            this.namedFolderCheckBox.Location = new System.Drawing.Point(681, 320);
             this.namedFolderCheckBox.Name = "namedFolderCheckBox";
-            this.namedFolderCheckBox.Size = new System.Drawing.Size(179, 29);
+            this.namedFolderCheckBox.Size = new System.Drawing.Size(92, 17);
             this.namedFolderCheckBox.TabIndex = 23;
             this.namedFolderCheckBox.Text = "Named Folder";
             this.toolTip1.SetToolTip(this.namedFolderCheckBox, "Backup into a subfolder named after the config name");
@@ -362,9 +345,10 @@
             // 
             // restoreBackupButton
             // 
-            this.restoreBackupButton.Location = new System.Drawing.Point(1362, 269);
+            this.restoreBackupButton.Location = new System.Drawing.Point(681, 140);
+            this.restoreBackupButton.Margin = new System.Windows.Forms.Padding(2);
             this.restoreBackupButton.Name = "restoreBackupButton";
-            this.restoreBackupButton.Size = new System.Drawing.Size(150, 44);
+            this.restoreBackupButton.Size = new System.Drawing.Size(75, 23);
             this.restoreBackupButton.TabIndex = 29;
             this.restoreBackupButton.Text = "Restore";
             this.toolTip1.SetToolTip(this.restoreBackupButton, "Restore selected backup");
@@ -373,9 +357,10 @@
             // 
             // deleteBackupButton
             // 
-            this.deleteBackupButton.Location = new System.Drawing.Point(1362, 337);
+            this.deleteBackupButton.Location = new System.Drawing.Point(681, 175);
+            this.deleteBackupButton.Margin = new System.Windows.Forms.Padding(2);
             this.deleteBackupButton.Name = "deleteBackupButton";
-            this.deleteBackupButton.Size = new System.Drawing.Size(150, 44);
+            this.deleteBackupButton.Size = new System.Drawing.Size(75, 23);
             this.deleteBackupButton.TabIndex = 31;
             this.deleteBackupButton.Text = "Delete";
             this.toolTip1.SetToolTip(this.deleteBackupButton, "Delete selected backup");
@@ -385,20 +370,29 @@
             // backupLimitLabel
             // 
             this.backupLimitLabel.AutoSize = true;
-            this.backupLimitLabel.Location = new System.Drawing.Point(733, 269);
-            this.backupLimitLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.backupLimitLabel.Location = new System.Drawing.Point(366, 140);
             this.backupLimitLabel.Name = "backupLimitLabel";
-            this.backupLimitLabel.Size = new System.Drawing.Size(57, 25);
+            this.backupLimitLabel.Size = new System.Drawing.Size(28, 13);
             this.backupLimitLabel.TabIndex = 33;
             this.backupLimitLabel.Text = "Limit";
             this.toolTip1.SetToolTip(this.backupLimitLabel, "Maximum number of backups to keep. 0 for no limit");
             // 
+            // compressCheckBox
+            // 
+            this.compressCheckBox.AutoSize = true;
+            this.compressCheckBox.Location = new System.Drawing.Point(681, 344);
+            this.compressCheckBox.Name = "compressCheckBox";
+            this.compressCheckBox.Size = new System.Drawing.Size(72, 17);
+            this.compressCheckBox.TabIndex = 34;
+            this.compressCheckBox.Text = "Compress";
+            this.toolTip1.SetToolTip(this.compressCheckBox, "Zip compress data into a single archive when saving");
+            this.compressCheckBox.UseVisualStyleBackColor = true;
+            // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(622, 808);
-            this.progressBar.Margin = new System.Windows.Forms.Padding(6);
+            this.progressBar.Location = new System.Drawing.Point(311, 420);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(890, 44);
+            this.progressBar.Size = new System.Drawing.Size(445, 23);
             this.progressBar.TabIndex = 21;
             // 
             // errorProvider1
@@ -408,20 +402,18 @@
             // numBackupsLablel
             // 
             this.numBackupsLablel.AutoSize = true;
-            this.numBackupsLablel.Location = new System.Drawing.Point(484, 269);
-            this.numBackupsLablel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.numBackupsLablel.Location = new System.Drawing.Point(242, 140);
             this.numBackupsLablel.Name = "numBackupsLablel";
-            this.numBackupsLablel.Size = new System.Drawing.Size(95, 25);
+            this.numBackupsLablel.Size = new System.Drawing.Size(49, 13);
             this.numBackupsLablel.TabIndex = 24;
             this.numBackupsLablel.Text = "Backups";
             // 
             // lastBackupLabel
             // 
             this.lastBackupLabel.AutoSize = true;
-            this.lastBackupLabel.Location = new System.Drawing.Point(484, 337);
-            this.lastBackupLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lastBackupLabel.Location = new System.Drawing.Point(242, 175);
             this.lastBackupLabel.Name = "lastBackupLabel";
-            this.lastBackupLabel.Size = new System.Drawing.Size(131, 25);
+            this.lastBackupLabel.Size = new System.Drawing.Size(67, 13);
             this.lastBackupLabel.TabIndex = 25;
             this.lastBackupLabel.TabStop = true;
             this.lastBackupLabel.Text = "Last Backup";
@@ -430,59 +422,58 @@
             // numBackupsText
             // 
             this.numBackupsText.AutoSize = true;
-            this.numBackupsText.Location = new System.Drawing.Point(616, 269);
-            this.numBackupsText.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.numBackupsText.Location = new System.Drawing.Point(308, 140);
             this.numBackupsText.Name = "numBackupsText";
-            this.numBackupsText.Size = new System.Drawing.Size(24, 25);
+            this.numBackupsText.Size = new System.Drawing.Size(13, 13);
             this.numBackupsText.TabIndex = 26;
             this.numBackupsText.Text = "0";
             // 
             // lastBackupText
             // 
             this.lastBackupText.AutoSize = true;
-            this.lastBackupText.Location = new System.Drawing.Point(616, 337);
-            this.lastBackupText.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lastBackupText.Location = new System.Drawing.Point(308, 175);
             this.lastBackupText.Name = "lastBackupText";
-            this.lastBackupText.Size = new System.Drawing.Size(60, 25);
+            this.lastBackupText.Size = new System.Drawing.Size(31, 13);
             this.lastBackupText.TabIndex = 27;
             this.lastBackupText.Text = "none";
             // 
             // destInputResolved
             // 
-            this.destInputResolved.Location = new System.Drawing.Point(622, 567);
-            this.destInputResolved.Margin = new System.Windows.Forms.Padding(6);
+            this.destInputResolved.Location = new System.Drawing.Point(311, 295);
             this.destInputResolved.Name = "destInputResolved";
             this.destInputResolved.ReadOnly = true;
-            this.destInputResolved.Size = new System.Drawing.Size(700, 31);
+            this.destInputResolved.Size = new System.Drawing.Size(352, 20);
             this.destInputResolved.TabIndex = 28;
             // 
             // backupListBox
             // 
             this.backupListBox.FormattingEnabled = true;
-            this.backupListBox.ItemHeight = 25;
-            this.backupListBox.Location = new System.Drawing.Point(953, 263);
+            this.backupListBox.Location = new System.Drawing.Point(476, 137);
+            this.backupListBox.Margin = new System.Windows.Forms.Padding(2);
             this.backupListBox.Name = "backupListBox";
             this.backupListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.backupListBox.Size = new System.Drawing.Size(368, 129);
+            this.backupListBox.Size = new System.Drawing.Size(186, 69);
             this.backupListBox.TabIndex = 30;
             this.backupListBox.SelectedValueChanged += new System.EventHandler(this.backupListBox_SelectedValueChanged);
             this.backupListBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.backupListBox_MouseDoubleClick);
             // 
             // backupLimitInput
             // 
-            this.backupLimitInput.Location = new System.Drawing.Point(809, 267);
+            this.backupLimitInput.Location = new System.Drawing.Point(404, 139);
+            this.backupLimitInput.Margin = new System.Windows.Forms.Padding(2);
             this.backupLimitInput.Name = "backupLimitInput";
-            this.backupLimitInput.Size = new System.Drawing.Size(108, 31);
+            this.backupLimitInput.Size = new System.Drawing.Size(54, 20);
             this.backupLimitInput.TabIndex = 32;
             // 
             // MainWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.CausesValidation = false;
-            this.ClientSize = new System.Drawing.Size(1550, 875);
+            this.ClientSize = new System.Drawing.Size(775, 455);
+            this.Controls.Add(this.compressCheckBox);
             this.Controls.Add(this.backupLimitLabel);
             this.Controls.Add(this.backupLimitInput);
             this.Controls.Add(this.deleteBackupButton);
@@ -514,7 +505,6 @@
             this.Controls.Add(this.menuStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip;
-            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "MainWindow";
             this.Text = "Light Backup Tool";
             this.contextMenuStrip1.ResumeLayout(false);
@@ -573,6 +563,7 @@
         private System.Windows.Forms.Button deleteBackupButton;
         private System.Windows.Forms.Label backupLimitLabel;
         private System.Windows.Forms.NumericUpDown backupLimitInput;
+        private System.Windows.Forms.CheckBox compressCheckBox;
     }
 }
 

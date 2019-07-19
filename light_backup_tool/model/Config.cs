@@ -14,11 +14,12 @@ namespace light_backup_tool.model
         public String source;
         public String destination;
         public Boolean namedFolder;
+        public Boolean compress;
         public int backupLimit;
 
         public Config() { }
 
-        public Config(String name, String description, String source, String destination, Boolean namedFolder, int backupLimit)
+        public Config(String name, String description, String source, String destination, Boolean namedFolder, Boolean compress, int backupLimit)
         {
             this.id = genId();
             this.name = name;
@@ -26,6 +27,7 @@ namespace light_backup_tool.model
             this.source = source;
             this.destination = destination;
             this.namedFolder = namedFolder;
+            this.compress = compress;
             this.backupLimit = backupLimit;
         }
 

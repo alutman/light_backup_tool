@@ -90,6 +90,7 @@ namespace light_backup_tool
             descInput.ReadOnly = !on;
             sourceInput.ReadOnly = !on;
             namedFolderCheckBox.Enabled = on;
+            compressCheckBox.Enabled = on;
             tagInput.ReadOnly = on;
 
             backupLimitInput.Enabled = on;
@@ -150,6 +151,7 @@ namespace light_backup_tool
                 numBackupsText.Text = "0";
                 backupLimitInput.Value = 0;
                 namedFolderCheckBox.Checked = true;
+                compressCheckBox.Checked = false;
                 tagInput.Text = "";
                 configTreeView.SelectedNode = null;
                 setEditMode(false);
@@ -161,6 +163,7 @@ namespace light_backup_tool
                 sourceInput.Text = c.source;
                 destInput.Text = c.destination;
                 namedFolderCheckBox.Checked = c.namedFolder;
+                compressCheckBox.Checked = c.compress;
                 numBackupsText.Text = ""+configs.countPastBackups(c.id);
                 lastBackupText.Text = configs.getLastBackup(c.id);
                 backupListBox.DataSource = configs.getBackupDirs(c.id, true).Reverse().ToArray();
@@ -272,13 +275,14 @@ namespace light_backup_tool
                     selectedConfig.source = sourceInput.Text;
                     selectedConfig.destination = destInput.Text;
                     selectedConfig.namedFolder = namedFolderCheckBox.Checked;
+                    selectedConfig.compress = compressCheckBox.Checked;
                     selectedConfig.backupLimit = Decimal.ToInt32(backupLimitInput.Value);
                     configs.put(selectedConfig);
                     addTreeNode(selectedConfig);
                 }
                 else
                 {
-                    Config c = new Config(nameInput.Text, descInput.Text, sourceInput.Text, destInput.Text, namedFolderCheckBox.Checked, Decimal.ToInt32(backupLimitInput.Value));
+                    Config c = new Config(nameInput.Text, descInput.Text, sourceInput.Text, destInput.Text, namedFolderCheckBox.Checked, compressCheckBox.Checked, Decimal.ToInt32(backupLimitInput.Value));
                     configs.put(c);
                     addTreeNode(c);
                 }
@@ -710,6 +714,11 @@ namespace light_backup_tool
             {
                 e.Cancel = true;
                 errorProvider1.SetError((Control)sender, "Invalid path");
+            }
+            if(FileTools.checkExists(destInput.Text) && !FileTools.isDirectory(destInput.Text))
+            {
+                e.Cancel = true;
+                errorProvider1.SetError((Control)sender, "Destination must be a directory");
             }
         }
 

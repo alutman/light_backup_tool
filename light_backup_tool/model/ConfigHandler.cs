@@ -81,7 +81,7 @@ namespace light_backup_tool.model
         {
             Config c = configs[id];
             String backupPath = Path.Combine(c.destination, c.namedFolder ? c.name : "", backupFolder);
-            BackupThread backupThread = new BackupThread(c, "", dateFormat, controller);
+            BackupThread backupThread = new BackupThread(c, dateFormat, controller);
             currentThread = new Thread(() => backupThread.restore(backupPath));
             currentThread.Start();
 
@@ -91,7 +91,7 @@ namespace light_backup_tool.model
         {
             Config c = configs[id];
             String deletePath = Path.Combine(c.destination, c.namedFolder ? c.name : "", backupFolder);
-            BackupThread backupThread = new BackupThread(c, "", dateFormat, controller);
+            BackupThread backupThread = new BackupThread(c, dateFormat, controller);
             currentThread = new Thread(() => backupThread.delete(deletePath));
             currentThread.Start();
 
@@ -109,7 +109,7 @@ namespace light_backup_tool.model
                 deletePaths.Add(Path.Combine(c.destination, c.namedFolder ? c.name : "", s));
 
             }
-            BackupThread backupThread = new BackupThread(c, "", dateFormat, controller);
+            BackupThread backupThread = new BackupThread(c, dateFormat, controller);
             currentThread = new Thread(() => backupThread.delete(deletePaths));
             currentThread.Start();
         }
@@ -117,15 +117,15 @@ namespace light_backup_tool.model
         public void restoreLast(String id)
         {
             String lastBackup = getLastBackupFull(id);
-            BackupThread backupThread = new BackupThread(configs[id], "", dateFormat, controller);
+            BackupThread backupThread = new BackupThread(configs[id], dateFormat, controller);
             currentThread = new Thread(() => backupThread.restore(lastBackup));
             currentThread.Start();
 
         }
         public void backup(String id, String tag)
         {
-            BackupThread backupThread = new BackupThread(configs[id],tag,dateFormat,controller);
-            currentThread = new Thread(new ThreadStart(backupThread.backup));
+            BackupThread backupThread = new BackupThread(configs[id],dateFormat,controller);
+            currentThread = new Thread(() => backupThread.backup(tag));
             currentThread.Start();
         }
 
